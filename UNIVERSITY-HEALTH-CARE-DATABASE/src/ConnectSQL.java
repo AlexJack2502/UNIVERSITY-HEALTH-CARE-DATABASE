@@ -45,13 +45,535 @@ public class ConnectSQL {
                         "Message",
                         JOptionPane.WARNING_MESSAGE);
             } else {
-                resultTable.setModel(Objects.requireNonNull(resultSetToTableModel(rs)));
+                resultTable.setModel(Objects.requireNonNull(DbUtils.resultSetToTableModel(rs)));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             closeConnect(con);
         }
+    }
+    public static boolean submitPatientHealingUpdate(String patientTxt, String healingTxt) {
+        Connection con = null;
+        PreparedStatement stmt;
+        int rs;
+        boolean isUpdated = false;
+        try {
+            con = DriverManager.getConnection(connectionUrl);
+            con.setAutoCommit(false);
+            String updateString =
+                    """
+                              INSERT INTO [Booking].[Booking] ([PatientID], [HealingInformationID])
+                              VALUES (?,?)
+                              """;
+            stmt = con.prepareStatement(updateString);
+            stmt.setString(1, patientTxt);
+            stmt.setString(2, healingTxt);
+            rs = stmt.executeUpdate();
+            if (rs > 0) {
+                isUpdated = true;
+            }
+            con.commit();
+        } catch (SQLException e) {
+            return isUpdated;
+        } finally {
+            closeConnect(con);
+        }
+        return isUpdated;
+    }
+    public static String[] showAuthenticateQuery(String accountTxt, String pwdTxt) {
+        Connection con = null;
+        PreparedStatement stmt;
+        ResultSet rs;
+        String[] results = new String[2];
+        try {
+            con = DriverManager.getConnection(connectionUrl);
+            String preparedQuery =
+                    """
+                              DECLARE @UserName AS VARCHAR(50) = ?
+                              DECLARE @Pwd AS VARCHAR(30) = ?
+          
+                              SELECT
+                                     CASE
+                                         WHEN A.User_ID = P.UserID AND P.UserID IS NOT NULL THEN 'Patient'
+                                         WHEN A.User_ID = S.UserID AND S.UserID IS NOT NULL THEN 'Specialist'
+                                         ELSE NULL
+                                         END AS Role,
+                                     CASE
+                                         WHEN A.User_ID = P.UserID AND P.UserID IS NOT NULL THEN P.Patient_ID
+                                         WHEN A.User_ID = S.UserID AND S.UserID IS NOT NULL THEN S.Specialist_ID
+                                         ELSE NULL
+                                         END AS ID
+                              FROM [Account].[Account] A
+                                       FULL JOIN [Account].[Patient] P ON A.User_ID = P.UserID
+                                       FULL JOIN [Account].[Specialist] S ON A.User_ID = S.UserID
+                              WHERE A.User_name = @UserName AND A.Password = HASHBYTES('SHA1', CONCAT(@Pwd, (SELECT A.Salt FROM [Account].[Account] A WHERE A.User_name = @UserName)))
+                              """;
+            stmt = con.prepareStatement(preparedQuery);
+            stmt.setString(1, accountTxt);
+            stmt.setString(2, pwdTxt);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                results[0] = rs.getString("ID");
+                results[1] = rs.getString("Role");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeConnect(con);
+        }
+        return results;
+    }
+    public static boolean submitPasswordUpdate(String userTxt, String oldPwdTxt, String newPwdTxt) {
+        Connection con = null;
+        PreparedStatement stmt;
+        int rs;
+        boolean isUpdated = false;
+        try {
+            con = DriverManager.getConnection(connectionUrl);
+            con.setAutoCommit(false);
+            String updateString =
+                    """
+                              DECLARE @UserName AS VARCHAR(50) = ?
+                              DECLARE @oldPwd AS VARCHAR(30) = ?
+                              DECLARE @newPwd AS VARCHAR(30) = ?
+                              DECLARE @Salt AS VARCHAR(5)
+                              SET @Salt
+                                  = CONCAT(
+                                              CHAR(FLOOR(RAND() * 10) + 48),
+                                              CHAR(FLOOR(RAND() * 26) + 65),
+                                              CHAR(FLOOR(RAND() * 26) + 97),
+                                              CHAR(FLOOR(RAND() * 15) + 33),
+                                              CHAR(FLOOR(RAND() * 10) + 48))
+                              UPDATE [Account].[Account]
+                              SET Password = HASHBYTES('SHA1', CONCAT(@newPwd, @Salt)),
+                                  Salt = @Salt
+                              WHERE User_name = @UserName
+                                AND Password  = HASHBYTES(
+                                      'SHA1', CONCAT(@oldPwd, (SELECT A.Salt FROM [Account].[Account] A WHERE A.User_name = @UserName)))
+                                                                      """;
+            stmt = con.prepareStatement(updateString);
+            stmt.setString(1, userTxt);
+            stmt.setString(2, oldPwdTxt);
+            stmt.setString(3, newPwdTxt);
+            rs = stmt.executeUpdate();
+            if (rs > 0) {
+                isUpdated = true;
+            }
+            con.commit();
+        } catch (SQLException e) {
+            return isUpdated;
+        } finally {
+            closeConnect(con);
+        }
+        return isUpdated;
+    }
+    public static String showSearchQuery(String queryTxt) {
+        Connection con = null;
+        PreparedStatement stmt;
+        ResultSet rs;
+        StringBuilder result = new StringBuilder();
+        try {
+            con = DriverManager.getConnection(connectionUrl);
+            String preparedQuery =
+                    """
+                              SELECT S.Name AS symptom, So.Name AS solution, So.Platform, So.Description FROM [Disease].[Disease] D INNER JOIN [Disease].[DiseaseSymptom] DS ON D.Disease_ID = DS.DiseaseID
+                              INNER JOIN [Disease].[Symptom] S ON DS.SymptomID = S.Symptom_ID
+                              INNER JOIN [Solution].[CureOneByOne] C ON S.Symptom_ID = C.SymptomID
+                              INNER JOIN [Solution].[Solution] So ON C.SolutionID = So.Solution_ID  WHERE D.Name = ?""";
+            stmt = con.prepareStatement(preparedQuery);
+            stmt.setString(1, queryTxt);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                result
+                        .append("Possible symptom: ")
+                        .append(rs.getString("symptom"))
+                        .append(" has the solution of: ")
+                        .append(rs.getString("solution"))
+                        .append(". Please see at: ")
+                        .append(rs.getString("platform"))
+                        .append(", more details: ")
+                        .append(rs.getString("description"))
+                        .append("\n\n");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeConnect(con);
+        }
+        return result.toString();
+    }
+    public static boolean cancelHealingUpdate(String patientTxt, String healingTxt) {
+        Connection con = null;
+        PreparedStatement stmt;
+        int rs;
+        boolean isUpdated = false;
+        try {
+            con = DriverManager.getConnection(connectionUrl);
+            con.setAutoCommit(false);
+            String updateString =
+                    """
+                              DELETE FROM [Booking].[Booking]
+                              WHERE PatientID = ? AND HealingInformationID = ?
+                              """;
+            stmt = con.prepareStatement(updateString);
+            stmt.setString(1, patientTxt);
+            stmt.setString(2, healingTxt);
+            rs = stmt.executeUpdate();
+            if (rs > 0) {
+                isUpdated = true;
+            }
+            con.commit();
+        } catch (SQLException e) {
+            return isUpdated;
+        } finally {
+            closeConnect(con);
+        }
+        return isUpdated;
+    }
+    public static String showPatientBookingQuery(String patientTxt) {
+        Connection con = null;
+        PreparedStatement stmt;
+        ResultSet rs;
+        StringBuilder result = new StringBuilder();
+        try {
+            con = DriverManager.getConnection(connectionUrl);
+            String preparedQuery =
+                    """
+                              SELECT H.HealingInformation_ID AS ID, CONCAT(DAY(H.Date), ' / ' , MONTH(H.Date)) AS DATE , H.Place, S.FullName, S.Phone
+                              FROM [Account].[Specialist] S
+                              INNER JOIN [Booking].[HealingInformation] H
+                              ON S.Specialist_ID = H.SpecialistID
+                              INNER JOIN [Booking].[Booking] B
+                              ON H.HealingInformation_ID = B.HealingInformationID
+                              INNER JOIN [Account].[Patient] P
+                              ON B.PatientID = P.Patient_ID
+                              WHERE P.Patient_ID = ? AND H.Date >= CAST( GETDATE() AS DATE ) ORDER BY H.Date""";
+            stmt = con.prepareStatement(preparedQuery);
+            stmt.setString(1, patientTxt);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                result
+                        .append("ID: ")
+                        .append(rs.getString("id"))
+                        .append("\n")
+                        .append("Date: ")
+                        .append(rs.getString("date"))
+                        .append("\n")
+                        .append("Place: ")
+                        .append(rs.getString("place"))
+                        .append("\n")
+                        .append("Specialist name: ")
+                        .append(rs.getString("fullname"))
+                        .append("\n")
+                        .append("Phone: ")
+                        .append(rs.getString("phone"))
+                        .append("\n\n");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeConnect(con);
+        }
+        return result.toString();
+    }
+    public static String showNameQuery(String userTxt, String roleTxt) {
+        Connection con = null;
+        PreparedStatement stmt;
+        ResultSet rs;
+        String result = "";
+        try {
+            con = DriverManager.getConnection(connectionUrl);
+            String preparedQuery =
+                    """
+                              DECLARE @UserID AS INT = ?
+                              DECLARE @Role AS VARCHAR(30) = ?
+                              SELECT FullName
+                              FROM (
+                                       SELECT
+                                           CASE
+                                               WHEN @UserID = P.Patient_ID AND @Role = 'Patient' THEN P.FullName
+                                               WHEN @UserID = S.Specialist_ID AND @Role = 'Specialist' THEN S.FullName
+                                               END AS FullName
+                                       FROM [Account].[Account] A
+                                                FULL JOIN [Account].[Patient] P ON A.User_ID = P.UserID
+                                                FULL JOIN [Account].[Specialist] S ON A.User_ID = S.UserID
+                                   ) AS SUBQUERY
+                              WHERE FullName IS NOT NULL
+                                                  """;
+            stmt = con.prepareStatement(preparedQuery);
+            stmt.setInt(1, Integer.parseInt(userTxt));
+            stmt.setString(2, roleTxt);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                result = rs.getString("fullname");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeConnect(con);
+        }
+        return result;
+    }
+
+    public static boolean submitHealingUpdate(
+            String specialistTxt,
+            String placeTxt,
+            String dateTxt,
+            String feeTxt,
+            String descTxt,
+            String extraTxt) {
+        Connection con = null;
+        PreparedStatement stmt;
+        int rs;
+        boolean isUpdated = false;
+        try {
+            con = DriverManager.getConnection(connectionUrl);
+            con.setAutoCommit(false);
+            String updateString =
+                    """
+                              INSERT INTO [Booking].[HealingInformation] ([SpecialistID], [Place], [Date], [Fee], [Description], [Extra_Information])
+                              VALUES (?,?,?,?,?,?)""";
+            stmt = con.prepareStatement(updateString);
+            stmt.setString(1, specialistTxt);
+            stmt.setString(2, placeTxt);
+            stmt.setDate(3, java.sql.Date.valueOf(dateTxt));
+            stmt.setString(4, feeTxt);
+            stmt.setString(5, descTxt);
+            stmt.setString(6, extraTxt);
+            rs = stmt.executeUpdate();
+            if (rs > 0) {
+                isUpdated = true;
+            }
+            con.commit();
+        } catch (SQLException e) {
+            return isUpdated;
+        } finally {
+            closeConnect(con);
+        }
+        return isUpdated;
+    }
+    public static String showSpecialistBookingQuery(String specialistTxt) {
+        Connection con = null;
+        PreparedStatement stmt;
+        ResultSet rs;
+        StringBuilder result = new StringBuilder();
+        try {
+            con = DriverManager.getConnection(connectionUrl);
+            String preparedQuery =
+                    """
+                              SELECT H.HealingInformation_ID AS ID, CONCAT(DAY(H.Date), ' / ' , MONTH(H.Date)) AS DATE, H.Place, H.Fee, P.FullName, P.Sex, P.Email,
+                              CASE
+                                  WHEN H.HealingInformation_ID = B.HealingInformationID THEN 'RESERVED'
+                                  ELSE 'VACANT'
+                              END AS State
+                              FROM [Account].[Specialist] S
+                              FULL JOIN [Booking].[HealingInformation] H ON S.Specialist_ID = H.SpecialistID
+                              FULL JOIN [Booking].[Booking] B ON H.HealingInformation_ID = B.HealingInformationID
+                              FULL JOIN [Account].[Patient] P ON B.PatientID = P.Patient_ID
+                              WHERE S.[Specialist_ID] = ? AND H.Date >= CAST( GETDATE() AS DATE ) ORDER BY H.Date""";
+            stmt = con.prepareStatement(preparedQuery);
+            stmt.setString(1, specialistTxt);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                result
+                        .append("ID: ")
+                        .append(rs.getString("id"))
+                        .append("\n")
+                        .append("State: ")
+                        .append(rs.getString("state"))
+                        .append("\n")
+                        .append("Date: ")
+                        .append(rs.getString("date"))
+                        .append("\n")
+                        .append("Place: ")
+                        .append(rs.getString("place"))
+                        .append("\n")
+                        .append("Fee: ")
+                        .append(rs.getString("fee"))
+                        .append("\n")
+                        .append("Patient name: ")
+                        .append(rs.getString("fullname"))
+                        .append("\n")
+                        .append("Sex: ")
+                        .append(rs.getString("sex"))
+                        .append("\n")
+                        .append("Email: ")
+                        .append(rs.getString("email"))
+                        .append("\n")
+                        .append("\n");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeConnect(con);
+        }
+        return result.toString();
+    }
+    public static boolean delistHealingUpdate(String specialistTxt, String healingTxt) {
+        Connection con = null;
+        PreparedStatement stmt;
+        int rs;
+        boolean isUpdated = false;
+        try {
+            con = DriverManager.getConnection(connectionUrl);
+            con.setAutoCommit(false);
+            String updateString =
+                    """
+                              DELETE FROM [Booking].[HealingInformation]
+                              WHERE SpecialistID = ? AND HealingInformation_ID = ?
+                              """;
+            stmt = con.prepareStatement(updateString);
+            stmt.setString(1, specialistTxt);
+            stmt.setString(2, healingTxt);
+            rs = stmt.executeUpdate();
+            if (rs > 0) {
+                isUpdated = true;
+            }
+            con.commit();
+        } catch (SQLException e) {
+            return isUpdated;
+        } finally {
+            closeConnect(con);
+        }
+        return isUpdated;
+    }
+    public static boolean submitSpecialistUser(
+            String accountTxt,
+            String pwdTxt,
+            String nameTxt,
+            String dobTxt,
+            String sexTxt,
+            String emailTxt,
+            String phoneTxt,
+            String idTxt,
+            String graduateTxt) {
+        Connection con = null;
+        PreparedStatement stmt1;
+        PreparedStatement stmt2;
+        int rs1;
+        int rs2;
+        boolean isUpdated = false;
+        try {
+            con = DriverManager.getConnection(connectionUrl);
+            con.setAutoCommit(false);
+            String updateString1 =
+                    """
+                              DECLARE @Username AS VARCHAR(50) = ?
+                              DECLARE @Pwd AS VARCHAR(30) = ?
+                              DECLARE @Salt AS VARCHAR(5)
+                              SET @Salt
+                                  = CONCAT(
+                                              CHAR(FLOOR(RAND() * 10) + 48),
+                                              CHAR(FLOOR(RAND() * 26) + 65),
+                                              CHAR(FLOOR(RAND() * 26) + 97),
+                                              CHAR(FLOOR(RAND() * 15) + 33),
+                                              CHAR(FLOOR(RAND() * 10) + 48))
+                              INSERT INTO [Account].[Account] ([User_name],
+                                                               [Password],
+                                                               [Salt])
+                              VALUES (@Username, HASHBYTES('SHA1', CONCAT(@Pwd, @Salt)), @Salt)
+                              """;
+            stmt1 = con.prepareStatement(updateString1);
+            stmt1.setString(1, accountTxt);
+            stmt1.setString(2, pwdTxt);
+            rs1 = stmt1.executeUpdate();
+            String updateString2 =
+                    """
+                              INSERT INTO [Account].[Specialist] ([UserID],
+                                                                  [FullName],
+                                                                  [DoB],
+                                                                  [Sex],
+                                                                  [Email],
+                                                                  [Phone],
+                                                                  [IdentifyNumber],
+                                                                  [GraduationUniversity])
+                              VALUES ((SELECT User_ID FROM [Account].[Account] A WHERE A.User_name = ?), ?, ?, ?, ?, ?, ?, ?)
+                              """;
+            stmt2 = con.prepareStatement(updateString2);
+            stmt2.setString(1, accountTxt);
+            stmt2.setString(2, nameTxt);
+            stmt2.setDate(3, java.sql.Date.valueOf(dobTxt));
+            stmt2.setString(4, sexTxt);
+            stmt2.setString(5, emailTxt);
+            stmt2.setString(6, phoneTxt);
+            stmt2.setString(7, idTxt);
+            stmt2.setString(8, graduateTxt);
+            rs2 = stmt2.executeUpdate();
+            if (rs1 > 0 && rs2 > 0) {
+                isUpdated = true;
+            }
+            con.commit();
+        } catch (SQLException e) {
+            return isUpdated;
+        } finally {
+            closeConnect(con);
+        }
+        return isUpdated;
+    }
+    public static boolean submitPatientUser(
+            String accountTxt,
+            String pwdTxt,
+            String nameTxt,
+            String dobTxt,
+            String sexTxt,
+            String emailTxt) {
+        Connection con = null;
+        PreparedStatement stmt1;
+        PreparedStatement stmt2;
+        int rs1;
+        int rs2;
+        boolean isUpdated = false;
+        try {
+            con = DriverManager.getConnection(connectionUrl);
+            con.setAutoCommit(false);
+            String updateString1 =
+                    """
+                              DECLARE @Username AS VARCHAR(50) = ?
+                              DECLARE @Pwd AS VARCHAR(30) = ?
+                              DECLARE @Salt AS VARCHAR(5)
+                              SET @Salt
+                                  = CONCAT(
+                                              CHAR(FLOOR(RAND() * 10) + 48),
+                                              CHAR(FLOOR(RAND() * 26) + 65),
+                                              CHAR(FLOOR(RAND() * 26) + 97),
+                                              CHAR(FLOOR(RAND() * 15) + 33),
+                                              CHAR(FLOOR(RAND() * 10) + 48))
+                              INSERT INTO [Account].[Account] ([User_name],
+                                                               [Password],
+                                                               [Salt])
+                              VALUES (@Username, HASHBYTES('SHA1', CONCAT(@Pwd, @Salt)), @Salt)
+                              """;
+            stmt1 = con.prepareStatement(updateString1);
+            stmt1.setString(1, accountTxt);
+            stmt1.setString(2, pwdTxt);
+            rs1 = stmt1.executeUpdate();
+            String updateString2 =
+                    """
+                              INSERT INTO [Account].[Patient] ([UserID],
+                                                               [FullName],
+                                                               [DoB],
+                                                               [Sex],
+                                                               [Email])
+                              VALUES ((SELECT User_ID FROM [Account].[Account] A WHERE A.User_name = ?), ?, ?, ?, ?)
+                              """;
+            stmt2 = con.prepareStatement(updateString2);
+            stmt2.setString(1, accountTxt);
+            stmt2.setString(2, nameTxt);
+            stmt2.setDate(3, java.sql.Date.valueOf(dobTxt));
+            stmt2.setString(4, sexTxt);
+            stmt2.setString(5, emailTxt);
+            rs2 = stmt2.executeUpdate();
+            if (rs1 > 0 && rs2 > 0) {
+                isUpdated = true;
+            }
+            con.commit();
+        } catch (SQLException e) {
+            return isUpdated;
+        } finally {
+            closeConnect(con);
+        }
+        return isUpdated;
     }
 
 

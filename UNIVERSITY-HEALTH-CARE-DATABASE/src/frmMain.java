@@ -13,7 +13,7 @@ public class frmMain extends JFrame {
     private frmMain() {
         setContentPane(Panel);
         setTitle("Lab 5 PDM");
-        setSize(1000, 600);
+        setSize(1200, 800);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
