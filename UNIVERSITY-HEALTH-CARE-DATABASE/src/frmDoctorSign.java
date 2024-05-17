@@ -84,7 +84,7 @@ public class frmDoctorSign extends JFrame {
               JOptionPane.showConfirmDialog(
                   null,
                   "Please check the information carefully!",
-                  "Confirmation",
+                  "Confirm",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.QUESTION_MESSAGE);
           if (option == JOptionPane.YES_OPTION) {
@@ -136,7 +136,7 @@ public class frmDoctorSign extends JFrame {
               JOptionPane.showConfirmDialog(
                   null,
                   "Are you sure you want to go back?",
-                  "Confirmation",
+                  "Confirm",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.QUESTION_MESSAGE);
           if (option == JOptionPane.YES_OPTION) {
