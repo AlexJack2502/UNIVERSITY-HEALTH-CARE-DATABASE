@@ -24,9 +24,9 @@ public class frmDoctorSign extends JFrame {
   private JTextField phoneField;
   private JLabel copyrightLabel;
 
-  private frmSpecialistSign() {
+  private frmDoctorSign() {
     setContentPane(panel);
-    setTitle("mindfulNESS - Specialist sign-up");
+    setTitle("mindfulNESS - Doctor sign-up");
     setSize(800, 800);
     setLocationRelativeTo(null);
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -36,7 +36,7 @@ public class frmDoctorSign extends JFrame {
               JOptionPane.showConfirmDialog(
                   null,
                   "Are you sure you want to clear all field(s)?",
-                  "Confirmation",
+                  "Confirm",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.WARNING_MESSAGE);
           if (option == JOptionPane.YES_OPTION) {
