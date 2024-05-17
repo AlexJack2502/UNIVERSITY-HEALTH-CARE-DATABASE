@@ -1,7 +1,7 @@
 import javax.swing.*;
 
-public class frmSpecialistDashboard extends JFrame {
-  private static frmSpecialistDashboard instance;
+public class frmDoctorDashboard extends JFrame {
+  private static frmDoctorDashboard instance;
   private JButton logOutButton;
   private JTextArea recentArea;
   private JButton postButton;
