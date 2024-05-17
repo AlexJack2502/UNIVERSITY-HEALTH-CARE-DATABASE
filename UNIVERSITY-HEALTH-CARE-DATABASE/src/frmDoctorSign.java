@@ -1,7 +1,7 @@
 import javax.swing.*;
 
-public class frmSpecialistSign extends JFrame {
-  private static frmSpecialistSign instance;
+public class frmDoctorSign extends JFrame {
+  private static frmDoctorSign instance;
   private JTextField fullNameField;
   private JTextField emailField;
   private JTextField idField;
