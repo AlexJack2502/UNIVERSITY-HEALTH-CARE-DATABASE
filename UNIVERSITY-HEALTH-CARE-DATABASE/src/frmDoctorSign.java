@@ -83,7 +83,7 @@ public class frmDoctorSign extends JFrame {
           int option =
               JOptionPane.showConfirmDialog(
                   null,
-                  "Please check the information carefully!",
+                  "Please check your information carefully!",
                   "Confirm",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.QUESTION_MESSAGE);
@@ -115,7 +115,7 @@ public class frmDoctorSign extends JFrame {
                     } else {
                       JOptionPane.showMessageDialog(
                           null,
-                          "Something went wrong. Check all the field(s) and try again!",
+                          "Error! Please check again!",
                           "Warning",
                           JOptionPane.WARNING_MESSAGE);
                     }

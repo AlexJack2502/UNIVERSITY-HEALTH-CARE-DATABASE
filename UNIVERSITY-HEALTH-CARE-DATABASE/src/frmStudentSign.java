@@ -6,20 +6,24 @@ public class frmStudentSign extends JFrame {
   private JButton confirmButton;
   private JTextField fullNameField;
   private JTextField dobField;
-  private JTextField emailField;
-  private JLabel titleLabel;
-  private JLabel emailLabel;
+  private JTextField addressField;
+    private JLabel addressLabel;
   private JLabel genderLabel;
-  private JLabel insLabel;
-  private JLabel fullNameLabel;
+    private JLabel fullNameLabel;
   private JLabel dobLabel;
   private JPanel panel;
   private JButton clearAllButton;
     private JComboBox<String> genderField;
+    private JLabel idLabel;
+    private JTextField idField;
+    private JLabel phoneLabel;
+    private JTextField phoneField;
+    private JLabel majorLable;
+    private JTextField majorField;
 
-  private frmStudentSign() {
+    private frmStudentSign() {
     setContentPane(panel);
-    setTitle("mindfulNESS - Patient sign-up");
+    setTitle("UNIVERSITY HEALTH CARE - Student sign-up");
     setSize(700, 700);
     setLocationRelativeTo(null);
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -29,7 +33,7 @@ public class frmStudentSign extends JFrame {
               JOptionPane.showConfirmDialog(
                   null,
                   "Are you sure you want to clear all field(s)?",
-                  "Confirmation",
+                  "Confirm",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.WARNING_MESSAGE);
           if (option == JOptionPane.YES_OPTION) {
@@ -39,7 +43,7 @@ public class frmStudentSign extends JFrame {
                   @Override
                   protected Void doInBackground() {
                     fullNameField.setText("");
-                    emailField.setText("");
+                    addressField.setText("");
                     dobField.setText("");
                     genderField.setSelectedItem("<please choose>");
                     return null;
@@ -56,7 +60,7 @@ public class frmStudentSign extends JFrame {
     confirmButton.addActionListener(
         e -> {
           if (fullNameField.getText().isEmpty()
-              || emailField.getText().isEmpty()
+              || addressField.getText().isEmpty()
               || dobField.getText().isEmpty()
               || String.valueOf(genderField.getSelectedItem()).equals("<please choose>")) {
             JOptionPane.showMessageDialog(
@@ -67,8 +71,8 @@ public class frmStudentSign extends JFrame {
           int option =
               JOptionPane.showConfirmDialog(
                   null,
-                  "Please check the information carefully!",
-                  "Confirmation",
+                  "Please check your information carefully!",
+                  "Confirm",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.QUESTION_MESSAGE);
           if (option == JOptionPane.YES_OPTION) {
@@ -83,7 +87,7 @@ public class frmStudentSign extends JFrame {
                         fullNameField.getText(),
                         dobField.getText(),
                         String.valueOf(genderField.getSelectedItem()),
-                        emailField.getText())) {
+                        addressField.getText())) {
                       JOptionPane.showMessageDialog(
                           null,
                           "Account: "
@@ -96,11 +100,11 @@ public class frmStudentSign extends JFrame {
                     } else {
                       JOptionPane.showMessageDialog(
                           null,
-                          "Something went wrong. Check all the field(s) and try again!",
+                          "Error! Please check again!",
                           "Warning",
                           JOptionPane.WARNING_MESSAGE);
                       fullNameField.setText("");
-                      emailField.setText("");
+                      addressField.setText("");
                       dobField.setText("");
                       genderField.setSelectedItem("<please choose>");
                     }
@@ -121,7 +125,7 @@ public class frmStudentSign extends JFrame {
               JOptionPane.showConfirmDialog(
                   null,
                   "Are you sure you want to go back?",
-                  "Confirmation",
+                  "Confirm",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.QUESTION_MESSAGE);
           if (option == JOptionPane.YES_OPTION) {
@@ -157,7 +161,7 @@ public class frmStudentSign extends JFrame {
     super.setVisible(visible);
     if (isVisible()) {
       fullNameField.setText("");
-      emailField.setText("");
+      addressField.setText("");
       dobField.setText("");
       genderField.setSelectedItem("<please choose>");
     }
