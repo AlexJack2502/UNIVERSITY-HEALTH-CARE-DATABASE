@@ -4,15 +4,14 @@ import javax.swing.*;
 public class frmIndex extends JFrame {
     private static frmIndex instance;
     private JPasswordField pwdField;
-    private JTextField accField;
+    private JTextField userField;
     private JButton logInButton;
     private JButton signUpButton;
     private JPanel panel;
     private JButton explorerModeButton;
     private String[] results;
     private JLabel titleLabel;
-    private JLabel insLabel;
-    private JLabel accLabel;
+    private JLabel userLabel;
     private JLabel pwdLabel;
     private JLabel copyrightLabel;
 
@@ -25,7 +24,7 @@ public class frmIndex extends JFrame {
         logInButton.addActionListener(
                 e -> {
                     logInButton.setEnabled(false);
-                    if (accField.getText().isEmpty() || String.valueOf(pwdField.getPassword()).isEmpty()) {
+                    if (userField.getText().isEmpty() || String.valueOf(pwdField.getPassword()).isEmpty()) {
                         JOptionPane.showMessageDialog(
                                 null,
                                 "Either account or password field(s) are empty!",
@@ -40,7 +39,7 @@ public class frmIndex extends JFrame {
                                 protected Void doInBackground() {
                                     results =
                                             ConnectSQL.showAuthenticateQuery(
-                                                    accField.getText(), String.valueOf(pwdField.getPassword()));
+                                                    userField.getText(), String.valueOf(pwdField.getPassword()));
                                     if (Objects.equals(results[1], "Patient")) {
                                         frmPatientDashboard.getInstance().setVisible(true);
                                         setVisible(false);
@@ -68,10 +67,10 @@ public class frmIndex extends JFrame {
         signUpButton.addActionListener(
                 e -> {
                     signUpButton.setEnabled(false);
-                    if (accField.getText().isEmpty()
+                    if (userField.getText().isEmpty()
                             || String.valueOf(pwdField.getPassword()).isEmpty()
                             || ConnectSQL.showAuthenticateQuery(
-                            accField.getText(), String.valueOf(pwdField.getPassword()))[1]
+                            userField.getText(), String.valueOf(pwdField.getPassword()))[1]
                             != null) {
                         JOptionPane.showMessageDialog(
                                 null,
@@ -150,7 +149,7 @@ public class frmIndex extends JFrame {
     }
 
     public String[] getCredentials() {
-        return new String[] {accField.getText(), String.valueOf(pwdField.getPassword())};
+        return new String[] {userField.getText(), String.valueOf(pwdField.getPassword())};
     }
 
     @Override

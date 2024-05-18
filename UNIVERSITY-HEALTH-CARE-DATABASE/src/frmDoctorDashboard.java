@@ -26,9 +26,9 @@ public class frmDoctorDashboard extends JFrame {
   private JButton clearAllButton;
   private JButton delistHealingButton;
 
-  private frmSpecialistDashboard() {
+  private frmDoctorDashboard() {
     setContentPane(panel);
-    setTitle("mindfulNESS - Specialist Dashboard");
+    setTitle("UNIVERSITY HEALTH CARE - Doctor Dashboard");
     setSize(1200, 800);
     setLocationRelativeTo(null);
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -38,7 +38,7 @@ public class frmDoctorDashboard extends JFrame {
               JOptionPane.showConfirmDialog(
                   null,
                   "Are you sure you want to log out?",
-                  "Confirmation",
+                  "Confirm",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.QUESTION_MESSAGE);
           if (option == JOptionPane.YES_OPTION) {
@@ -51,7 +51,7 @@ public class frmDoctorDashboard extends JFrame {
                       setVisible(false);
                       JOptionPane.showMessageDialog(
                           null,
-                          "Logged out! See you again.",
+                          "Logged out successfully! ",
                           "Success",
                           JOptionPane.WARNING_MESSAGE);
                       Thread.sleep(1000);
@@ -135,7 +135,7 @@ public class frmDoctorDashboard extends JFrame {
               JOptionPane.showConfirmDialog(
                   null,
                   "Are you sure you want to clear all field(s)?",
-                  "Confirmation",
+                  "Confirm",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.WARNING_MESSAGE);
           if (option == JOptionPane.YES_OPTION) {
@@ -175,8 +175,8 @@ public class frmDoctorDashboard extends JFrame {
           int option =
               JOptionPane.showConfirmDialog(
                   null,
-                  "Confirm posting healing information?",
-                  "Confirmation",
+                  "Confirm posting information?",
+                  "Confirm",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.QUESTION_MESSAGE);
           if (option == JOptionPane.YES_OPTION) {
@@ -193,7 +193,7 @@ public class frmDoctorDashboard extends JFrame {
                         extraField.getText())) {
                       JOptionPane.showMessageDialog(
                           null,
-                          "Healing information posted! Please check the nearby box.",
+                          "The Information posted! Please check the nearby box.",
                           "Success",
                           JOptionPane.INFORMATION_MESSAGE);
                       placeField.setText("");
@@ -208,7 +208,7 @@ public class frmDoctorDashboard extends JFrame {
                     } else {
                       JOptionPane.showMessageDialog(
                           null,
-                          "Healing information posting error. Please try again!",
+                          "The Information posting error. Please try again!",
                           "Warning",
                           JOptionPane.WARNING_MESSAGE);
                     }
@@ -286,9 +286,9 @@ public class frmDoctorDashboard extends JFrame {
         });
   }
 
-  public static synchronized frmSpecialistDashboard getInstance() {
+  public static synchronized frmDoctorDashboard getInstance() {
     if (instance == null) {
-      instance = new frmSpecialistDashboard();
+      instance = new frmDoctorDashboard();
     }
     return instance;
   }
