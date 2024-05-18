@@ -95,7 +95,7 @@
         </constraints>
         <properties>
           <font name="Google Sans" size="26" style="1"/>
-          <icon value="image/doctor.png"/>
+          <icon value="image/logo-doctor.png"/>
           <text value="DOCTOR"/>
         </properties>
       </component>

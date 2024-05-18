@@ -4,13 +4,12 @@ public class frmRoles extends JFrame {
   private static frmRoles instance;
   private JButton patientButton;
   private JButton specialistButton;
-  private JLabel insLabel;
     private JPanel panel;
   private JButton goBackButton;
 
     private frmRoles() {
     setContentPane(panel);
-    setTitle("mindfulNESS - Choose your role");
+    setTitle("UNIVERSITY HEALTH CARE - Choose your role");
     setSize(500, 500);
     setLocationRelativeTo(null);
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -19,8 +18,8 @@ public class frmRoles extends JFrame {
           int option =
               JOptionPane.showConfirmDialog(
                   null,
-                  "Are you sure your role is PATIENT?",
-                  "Confirmation",
+                  "Are you sure you are a Student?",
+                  "Confirm",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.QUESTION_MESSAGE);
           if (option == JOptionPane.YES_OPTION) {
@@ -67,8 +66,8 @@ public class frmRoles extends JFrame {
           int option =
               JOptionPane.showConfirmDialog(
                   null,
-                  "Are you sure your role is SPECIALIST?",
-                  "Confirmation",
+                  "Are you sure you are a Doctor?",
+                  "Confirm",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.QUESTION_MESSAGE);
           if (option == JOptionPane.YES_OPTION) {
@@ -117,7 +116,7 @@ public class frmRoles extends JFrame {
               JOptionPane.showConfirmDialog(
                   null,
                   "Are you sure you want to go back?",
-                  "Confirmation",
+                  "Confirm",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.QUESTION_MESSAGE);
           if (option == JOptionPane.YES_OPTION) {
