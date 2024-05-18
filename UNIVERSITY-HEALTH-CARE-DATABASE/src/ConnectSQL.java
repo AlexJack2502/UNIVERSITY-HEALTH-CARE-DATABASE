@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class ConnectSQL {
     static final String connectionUrl =
-            "jdbc:sqlserver:http://superpdm.bsite.net;databaseName=monoalice_PDM_Lab5;user=monoalice_PDM_Lab5;password=MonoAlice;encrypt=true;trustServerCertificate=true;";
+         "jdbc:sqlserver://sql.bsite.net\\MSSQL2016;databaseName=monoalice_PDM_Lab5;user=monoalice_PDM_Lab5;password=MonoAlice;encrypt=true;trustServerCertificate=true;";
 
     public static void closeConnect(Connection con) {
         if (con != null) {
@@ -22,7 +22,7 @@ public class ConnectSQL {
         }
     }
 
-    public static void displayHealingSessions(JTable resultTable) {
+    public static void showAvailableHealingQuery(JTable resultTable) {
         Connection connection = null;
         PreparedStatement statement;
         ResultSet resultSet;
@@ -54,7 +54,7 @@ public class ConnectSQL {
         }
     }
     
-    public static boolean updatePatientHealing(String patientId, String healingSessionId) {
+    public static boolean submitPatientHealingUpdate(String patientId, String healingSessionId) {
         Connection connection = null;
         PreparedStatement statement;
         int affectedRows;
@@ -173,7 +173,7 @@ public class ConnectSQL {
 
     //Boundary 2 
 
-    public static String retrieveSearchResults(String queryText) {
+    public static String showSearchQuery(String queryText) {
         Connection connection = null;
         PreparedStatement statement;
         ResultSet resultSet;
@@ -209,7 +209,7 @@ public class ConnectSQL {
         return result.toString();
     }
     
-    public static boolean cancelHealingReservation(String patientId, String healingId) {
+    public static boolean cancelHealingUpdate(String patientId, String healingId) {
         Connection connection = null;
         PreparedStatement statement;
         int affectedRows;
@@ -241,7 +241,7 @@ public class ConnectSQL {
 
     //Boundary 3 
 
-    public static String retrievePatientBookings(String patientId) {
+    public static String showPatientBookingQuery(String patientId) {
         Connection connection = null;
         PreparedStatement statement;
         ResultSet resultSet;
@@ -288,7 +288,7 @@ public class ConnectSQL {
         return result.toString();
     }
     
-    public static String retrieveName(String userId, String role) {
+    public static String showNameQuery(String userId, String role) {
         Connection connection = null;
         PreparedStatement statement;
         ResultSet resultSet;
@@ -330,7 +330,7 @@ public class ConnectSQL {
 
     //Boundary 4 
 
-    public static boolean addHealingInformation(
+    public static boolean submitHealingUpdate(
         String specialistId,
         String place,
         String date,
@@ -368,7 +368,7 @@ public class ConnectSQL {
     return isAdded;
 }
 
-public static String retrieveSpecialistBookings(String specialistId) {
+public static String showSpecialistBookingQuery(String specialistId) {
     Connection connection = null;
     PreparedStatement statement;
     ResultSet resultSet;
@@ -429,7 +429,7 @@ public static String retrieveSpecialistBookings(String specialistId) {
 
     //Boundary 5 
 
-    public static boolean removeHealingInformation(String specialistId, String healingId) {
+    public static boolean delistHealingUpdate(String specialistId, String healingId) {
         Connection connection = null;
         PreparedStatement statement;
         int result;
@@ -458,7 +458,7 @@ public static String retrieveSpecialistBookings(String specialistId) {
         return isRemoved;
     }
     
-    public static boolean addSpecialistUser(
+    public static boolean submitSpecialistUser(
             String username,
             String password,
             String fullName,
@@ -535,7 +535,7 @@ public static String retrieveSpecialistBookings(String specialistId) {
 
     //Boundary 6 
 
-    public static boolean addPatientUser(
+    public static boolean submitPatientUser(
         String username,
         String password,
         String fullName,
@@ -600,7 +600,7 @@ public static String retrieveSpecialistBookings(String specialistId) {
     return isAdded;
 }
 
-public static void executeQuery(String preparedQuery, JTable resultTable) {
+public static void showQuery(String preparedQuery, JTable resultTable) {
     Connection connection = null;
     PreparedStatement statement;
     ResultSet resultSet;
