@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class ConnectSQL {
     static final String connectionUrl =
-            "jdbc:sqlserver://sql.bsite.net\\MSSQL2016;databaseName=monoalice_PDM_Lab5;user=monoalice_PDM_Lab5;password=MonoAlice;encrypt=true;trustServerCertificate=true;";
+         "jdbc:sqlserver://sql.bsite.net\\MSSQL2016;databaseName=monoalice_PDM_Lab5;user=monoalice_PDM_Lab5;password=MonoAlice;encrypt=true;trustServerCertificate=true;";
 
     public static void closeConnect(Connection con) {
         if (con != null) {
@@ -23,64 +23,66 @@ public class ConnectSQL {
     }
 
     public static void showAvailableHealingQuery(JTable resultTable) {
-        Connection con = null;
-        PreparedStatement stmt;
-        ResultSet rs;
+        Connection connection = null;
+        PreparedStatement statement;
+        ResultSet resultSet;
         try {
-            con = DriverManager.getConnection(connectionUrl);
-            String preparedQuery =
+            connection = DriverManager.getConnection(connectionUrl);
+            String query =
                     """
-                            SELECT H.HealingInformation_ID AS ID, H.Date, H.Place, CAST(H.Fee AS INT) AS Fee, S.FullName, S.Sex
-                            FROM [Booking].[HealingInformation] H
-                            INNER JOIN [Account].[Specialist] S
-                            ON S.Specialist_ID = H.SpecialistID
-                            WHERE H.HealingInformation_ID NOT IN (SELECT DISTINCT B.HealingInformationID
-                            FROM [Booking].[Booking] B) AND H.Date >= CAST(GETDATE() AS DATE ) ORDER BY H.Date""";
-            stmt = con.prepareStatement(preparedQuery);
-            rs = stmt.executeQuery();
-            if (!rs.next()) {
+                    SELECT H.HealingInformation_ID AS ID, H.Date, H.Place, CAST(H.Fee AS INT) AS Fee, S.FullName, S.Sex
+                    FROM [Booking].[HealingInformation] H
+                    INNER JOIN [Account].[Specialist] S
+                    ON S.Specialist_ID = H.SpecialistID
+                    WHERE H.HealingInformation_ID NOT IN (SELECT DISTINCT B.HealingInformationID
+                    FROM [Booking].[Booking] B) AND H.Date >= CAST(GETDATE() AS DATE ) ORDER BY H.Date""";
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
+            if (!resultSet.next()) {
                 JOptionPane.showMessageDialog(
                         null,
-                        "No available healing found! Please try again later",
+                        "No available healing sessions found! Please try again later",
                         "Message",
                         JOptionPane.WARNING_MESSAGE);
             } else {
-                resultTable.setModel(Objects.requireNonNull(DbUtils.resultSetToTableModel(rs)));
+                resultTable.setModel(Objects.requireNonNull(DbUtils.resultSetToTableModel(resultSet)));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            closeConnect(con);
+            closeConnect(connection);
         }
     }
-    public static boolean submitPatientHealingUpdate(String patientTxt, String healingTxt) {
-        Connection con = null;
-        PreparedStatement stmt;
-        int rs;
-        boolean isUpdated = false;
+    
+    public static boolean submitPatientHealingUpdate(String patientId, String healingSessionId) {
+        Connection connection = null;
+        PreparedStatement statement;
+        int affectedRows;
+        boolean updateSuccess = false;
         try {
-            con = DriverManager.getConnection(connectionUrl);
-            con.setAutoCommit(false);
-            String updateString =
+            connection = DriverManager.getConnection(connectionUrl);
+            connection.setAutoCommit(false);
+            String updateQuery =
                     """
-                              INSERT INTO [Booking].[Booking] ([PatientID], [HealingInformationID])
-                              VALUES (?,?)
-                              """;
-            stmt = con.prepareStatement(updateString);
-            stmt.setString(1, patientTxt);
-            stmt.setString(2, healingTxt);
-            rs = stmt.executeUpdate();
-            if (rs > 0) {
-                isUpdated = true;
+                    INSERT INTO [Booking].[Booking] ([PatientID], [HealingInformationID])
+                    VALUES (?,?)""";
+            statement = connection.prepareStatement(updateQuery);
+            statement.setString(1, patientId);
+            statement.setString(2, healingSessionId);
+            affectedRows = statement.executeUpdate();
+            if (affectedRows > 0) {
+                updateSuccess = true;
             }
-            con.commit();
+            connection.commit();
         } catch (SQLException e) {
-            return isUpdated;
+            return updateSuccess;
         } finally {
-            closeConnect(con);
+            closeConnect(connection);
         }
-        return isUpdated;
+        return updateSuccess;
     }
+
+    //Boundary 1 
     public static String[] showAuthenticateQuery(String accountTxt, String pwdTxt) {
         Connection con = null;
         PreparedStatement stmt;
@@ -167,449 +169,469 @@ public class ConnectSQL {
             closeConnect(con);
         }
         return isUpdated;
-    }
-    public static String showSearchQuery(String queryTxt) {
-        Connection con = null;
-        PreparedStatement stmt;
-        ResultSet rs;
+    } 
+
+    //Boundary 2 
+
+    public static String showSearchQuery(String queryText) {
+        Connection connection = null;
+        PreparedStatement statement;
+        ResultSet resultSet;
         StringBuilder result = new StringBuilder();
         try {
-            con = DriverManager.getConnection(connectionUrl);
+            connection = DriverManager.getConnection(connectionUrl);
             String preparedQuery =
                     """
-                              SELECT S.Name AS symptom, So.Name AS solution, So.Platform, So.Description FROM [Disease].[Disease] D INNER JOIN [Disease].[DiseaseSymptom] DS ON D.Disease_ID = DS.DiseaseID
-                              INNER JOIN [Disease].[Symptom] S ON DS.SymptomID = S.Symptom_ID
-                              INNER JOIN [Solution].[CureOneByOne] C ON S.Symptom_ID = C.SymptomID
-                              INNER JOIN [Solution].[Solution] So ON C.SolutionID = So.Solution_ID  WHERE D.Name = ?""";
-            stmt = con.prepareStatement(preparedQuery);
-            stmt.setString(1, queryTxt);
-            rs = stmt.executeQuery();
-            while (rs.next()) {
+                    SELECT S.Name AS symptom, So.Name AS solution, So.Platform, So.Description FROM [Disease].[Disease] D INNER JOIN [Disease].[DiseaseSymptom] DS ON D.Disease_ID = DS.DiseaseID
+                    INNER JOIN [Disease].[Symptom] S ON DS.SymptomID = S.Symptom_ID
+                    INNER JOIN [Solution].[CureOneByOne] C ON S.Symptom_ID = C.SymptomID
+                    INNER JOIN [Solution].[Solution] So ON C.SolutionID = So.Solution_ID  WHERE D.Name = ?""";
+            statement = connection.prepareStatement(preparedQuery);
+            statement.setString(1, queryText);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
                 result
                         .append("Possible symptom: ")
-                        .append(rs.getString("symptom"))
+                        .append(resultSet.getString("symptom"))
                         .append(" has the solution of: ")
-                        .append(rs.getString("solution"))
+                        .append(resultSet.getString("solution"))
                         .append(". Please see at: ")
-                        .append(rs.getString("platform"))
+                        .append(resultSet.getString("platform"))
                         .append(", more details: ")
-                        .append(rs.getString("description"))
+                        .append(resultSet.getString("description"))
                         .append("\n\n");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            closeConnect(con);
+            closeConnect(connection);
         }
         return result.toString();
     }
-    public static boolean cancelHealingUpdate(String patientTxt, String healingTxt) {
-        Connection con = null;
-        PreparedStatement stmt;
-        int rs;
+    
+    public static boolean cancelHealingUpdate(String patientId, String healingId) {
+        Connection connection = null;
+        PreparedStatement statement;
+        int affectedRows;
         boolean isUpdated = false;
         try {
-            con = DriverManager.getConnection(connectionUrl);
-            con.setAutoCommit(false);
-            String updateString =
+            connection = DriverManager.getConnection(connectionUrl);
+            connection.setAutoCommit(false);
+            String updateQuery =
                     """
-                              DELETE FROM [Booking].[Booking]
-                              WHERE PatientID = ? AND HealingInformationID = ?
-                              """;
-            stmt = con.prepareStatement(updateString);
-            stmt.setString(1, patientTxt);
-            stmt.setString(2, healingTxt);
-            rs = stmt.executeUpdate();
-            if (rs > 0) {
+                    DELETE FROM [Booking].[Booking]
+                    WHERE PatientID = ? AND HealingInformationID = ?
+                    """;
+            statement = connection.prepareStatement(updateQuery);
+            statement.setString(1, patientId);
+            statement.setString(2, healingId);
+            affectedRows = statement.executeUpdate();
+            if (affectedRows > 0) {
                 isUpdated = true;
             }
-            con.commit();
+            connection.commit();
         } catch (SQLException e) {
             return isUpdated;
         } finally {
-            closeConnect(con);
+            closeConnect(connection);
         }
         return isUpdated;
     }
-    public static String showPatientBookingQuery(String patientTxt) {
-        Connection con = null;
-        PreparedStatement stmt;
-        ResultSet rs;
+    
+
+    //Boundary 3 
+
+    public static String showPatientBookingQuery(String patientId) {
+        Connection connection = null;
+        PreparedStatement statement;
+        ResultSet resultSet;
         StringBuilder result = new StringBuilder();
         try {
-            con = DriverManager.getConnection(connectionUrl);
+            connection = DriverManager.getConnection(connectionUrl);
             String preparedQuery =
                     """
-                              SELECT H.HealingInformation_ID AS ID, CONCAT(DAY(H.Date), ' / ' , MONTH(H.Date)) AS DATE , H.Place, S.FullName, S.Phone
-                              FROM [Account].[Specialist] S
-                              INNER JOIN [Booking].[HealingInformation] H
-                              ON S.Specialist_ID = H.SpecialistID
-                              INNER JOIN [Booking].[Booking] B
-                              ON H.HealingInformation_ID = B.HealingInformationID
-                              INNER JOIN [Account].[Patient] P
-                              ON B.PatientID = P.Patient_ID
-                              WHERE P.Patient_ID = ? AND H.Date >= CAST( GETDATE() AS DATE ) ORDER BY H.Date""";
-            stmt = con.prepareStatement(preparedQuery);
-            stmt.setString(1, patientTxt);
-            rs = stmt.executeQuery();
-            while (rs.next()) {
+                    SELECT H.HealingInformation_ID AS ID, CONCAT(DAY(H.Date), ' / ' , MONTH(H.Date)) AS DATE , H.Place, S.FullName, S.Phone
+                    FROM [Account].[Specialist] S
+                    INNER JOIN [Booking].[HealingInformation] H
+                    ON S.Specialist_ID = H.SpecialistID
+                    INNER JOIN [Booking].[Booking] B
+                    ON H.HealingInformation_ID = B.HealingInformationID
+                    INNER JOIN [Account].[Patient] P
+                    ON B.PatientID = P.Patient_ID
+                    WHERE P.Patient_ID = ? AND H.Date >= CAST(GETDATE() AS DATE ) ORDER BY H.Date""";
+            statement = connection.prepareStatement(preparedQuery);
+            statement.setString(1, patientId);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
                 result
                         .append("ID: ")
-                        .append(rs.getString("id"))
+                        .append(resultSet.getString("id"))
                         .append("\n")
                         .append("Date: ")
-                        .append(rs.getString("date"))
+                        .append(resultSet.getString("date"))
                         .append("\n")
                         .append("Place: ")
-                        .append(rs.getString("place"))
+                        .append(resultSet.getString("place"))
                         .append("\n")
                         .append("Specialist name: ")
-                        .append(rs.getString("fullname"))
+                        .append(resultSet.getString("fullname"))
                         .append("\n")
                         .append("Phone: ")
-                        .append(rs.getString("phone"))
+                        .append(resultSet.getString("phone"))
                         .append("\n\n");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            closeConnect(con);
+            closeConnect(connection);
         }
         return result.toString();
     }
-    public static String showNameQuery(String userTxt, String roleTxt) {
-        Connection con = null;
-        PreparedStatement stmt;
-        ResultSet rs;
+    
+    public static String showNameQuery(String userId, String role) {
+        Connection connection = null;
+        PreparedStatement statement;
+        ResultSet resultSet;
         String result = "";
         try {
-            con = DriverManager.getConnection(connectionUrl);
+            connection = DriverManager.getConnection(connectionUrl);
             String preparedQuery =
                     """
-                              DECLARE @UserID AS INT = ?
-                              DECLARE @Role AS VARCHAR(30) = ?
-                              SELECT FullName
-                              FROM (
-                                       SELECT
-                                           CASE
-                                               WHEN @UserID = P.Patient_ID AND @Role = 'Patient' THEN P.FullName
-                                               WHEN @UserID = S.Specialist_ID AND @Role = 'Specialist' THEN S.FullName
-                                               END AS FullName
-                                       FROM [Account].[Account] A
-                                                FULL JOIN [Account].[Patient] P ON A.User_ID = P.UserID
-                                                FULL JOIN [Account].[Specialist] S ON A.User_ID = S.UserID
-                                   ) AS SUBQUERY
-                              WHERE FullName IS NOT NULL
-                                                  """;
-            stmt = con.prepareStatement(preparedQuery);
-            stmt.setInt(1, Integer.parseInt(userTxt));
-            stmt.setString(2, roleTxt);
-            rs = stmt.executeQuery();
-            while (rs.next()) {
-                result = rs.getString("fullname");
+                    DECLARE @UserID AS INT = ?
+                    DECLARE @Role AS VARCHAR(30) = ?
+                    SELECT FullName
+                    FROM (
+                             SELECT
+                                 CASE
+                                     WHEN @UserID = P.Patient_ID AND @Role = 'Patient' THEN P.FullName
+                                     WHEN @UserID = S.Specialist_ID AND @Role = 'Specialist' THEN S.FullName
+                                     END AS FullName
+                             FROM [Account].[Account] A
+                                      FULL JOIN [Account].[Patient] P ON A.User_ID = P.UserID
+                                      FULL JOIN [Account].[Specialist] S ON A.User_ID = S.UserID
+                         ) AS SUBQUERY
+                    WHERE FullName IS NOT NULL
+                    """;
+            statement = connection.prepareStatement(preparedQuery);
+            statement.setInt(1, Integer.parseInt(userId));
+            statement.setString(2, role);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                result = resultSet.getString("fullname");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            closeConnect(con);
+            closeConnect(connection);
         }
-        return result;
-    }
+        return result; 
+    }  
+    
+
+    //Boundary 4 
 
     public static boolean submitHealingUpdate(
-            String specialistTxt,
-            String placeTxt,
-            String dateTxt,
-            String feeTxt,
-            String descTxt,
-            String extraTxt) {
-        Connection con = null;
-        PreparedStatement stmt;
-        int rs;
-        boolean isUpdated = false;
-        try {
-            con = DriverManager.getConnection(connectionUrl);
-            con.setAutoCommit(false);
-            String updateString =
-                    """
-                              INSERT INTO [Booking].[HealingInformation] ([SpecialistID], [Place], [Date], [Fee], [Description], [Extra_Information])
-                              VALUES (?,?,?,?,?,?)""";
-            stmt = con.prepareStatement(updateString);
-            stmt.setString(1, specialistTxt);
-            stmt.setString(2, placeTxt);
-            stmt.setDate(3, java.sql.Date.valueOf(dateTxt));
-            stmt.setString(4, feeTxt);
-            stmt.setString(5, descTxt);
-            stmt.setString(6, extraTxt);
-            rs = stmt.executeUpdate();
-            if (rs > 0) {
-                isUpdated = true;
-            }
-            con.commit();
-        } catch (SQLException e) {
-            return isUpdated;
-        } finally {
-            closeConnect(con);
+        String specialistId,
+        String place,
+        String date,
+        String fee,
+        String description,
+        String extraInfo) {
+    Connection connection = null;
+    PreparedStatement statement;
+    int result;
+    boolean isAdded = false;
+    try {
+        connection = DriverManager.getConnection(connectionUrl);
+        connection.setAutoCommit(false);
+        String insertQuery =
+                """
+                INSERT INTO [Booking].[HealingInformation] ([SpecialistID], [Place], [Date], [Fee], [Description], [Extra_Information])
+                VALUES (?,?,?,?,?,?)""";
+        statement = connection.prepareStatement(insertQuery);
+        statement.setString(1, specialistId);
+        statement.setString(2, place);
+        statement.setDate(3, java.sql.Date.valueOf(date));
+        statement.setString(4, fee);
+        statement.setString(5, description);
+        statement.setString(6, extraInfo);
+        result = statement.executeUpdate();
+        if (result > 0) {
+            isAdded = true;
         }
-        return isUpdated;
+        connection.commit();
+    } catch (SQLException e) {
+        return isAdded;
+    } finally {
+        closeConnect(connection);
     }
-    public static String showSpecialistBookingQuery(String specialistTxt) {
-        Connection con = null;
-        PreparedStatement stmt;
-        ResultSet rs;
-        StringBuilder result = new StringBuilder();
-        try {
-            con = DriverManager.getConnection(connectionUrl);
-            String preparedQuery =
-                    """
-                              SELECT H.HealingInformation_ID AS ID, CONCAT(DAY(H.Date), ' / ' , MONTH(H.Date)) AS DATE, H.Place, H.Fee, P.FullName, P.Sex, P.Email,
-                              CASE
-                                  WHEN H.HealingInformation_ID = B.HealingInformationID THEN 'RESERVED'
-                                  ELSE 'VACANT'
-                              END AS State
-                              FROM [Account].[Specialist] S
-                              FULL JOIN [Booking].[HealingInformation] H ON S.Specialist_ID = H.SpecialistID
-                              FULL JOIN [Booking].[Booking] B ON H.HealingInformation_ID = B.HealingInformationID
-                              FULL JOIN [Account].[Patient] P ON B.PatientID = P.Patient_ID
-                              WHERE S.[Specialist_ID] = ? AND H.Date >= CAST( GETDATE() AS DATE ) ORDER BY H.Date""";
-            stmt = con.prepareStatement(preparedQuery);
-            stmt.setString(1, specialistTxt);
-            rs = stmt.executeQuery();
-            while (rs.next()) {
-                result
-                        .append("ID: ")
-                        .append(rs.getString("id"))
-                        .append("\n")
-                        .append("State: ")
-                        .append(rs.getString("state"))
-                        .append("\n")
-                        .append("Date: ")
-                        .append(rs.getString("date"))
-                        .append("\n")
-                        .append("Place: ")
-                        .append(rs.getString("place"))
-                        .append("\n")
-                        .append("Fee: ")
-                        .append(rs.getString("fee"))
-                        .append("\n")
-                        .append("Patient name: ")
-                        .append(rs.getString("fullname"))
-                        .append("\n")
-                        .append("Sex: ")
-                        .append(rs.getString("sex"))
-                        .append("\n")
-                        .append("Email: ")
-                        .append(rs.getString("email"))
-                        .append("\n")
-                        .append("\n");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            closeConnect(con);
+    return isAdded;
+}
+
+public static String showSpecialistBookingQuery(String specialistId) {
+    Connection connection = null;
+    PreparedStatement statement;
+    ResultSet resultSet;
+    StringBuilder result = new StringBuilder();
+    try {
+        connection = DriverManager.getConnection(connectionUrl);
+        String preparedQuery =
+                """
+                SELECT H.HealingInformation_ID AS ID, CONCAT(DAY(H.Date), ' / ' , MONTH(H.Date)) AS DATE, H.Place, H.Fee, P.FullName, P.Sex, P.Email,
+                CASE
+                    WHEN H.HealingInformation_ID = B.HealingInformationID THEN 'RESERVED'
+                    ELSE 'VACANT' 
+                END AS State
+                FROM [Account].[Specialist] S
+                FULL JOIN [Booking].[HealingInformation] H ON S.Specialist_ID = H.SpecialistID
+                FULL JOIN [Booking].[Booking] B ON H.HealingInformation_ID = B.HealingInformationID
+                FULL JOIN [Account].[Patient] P ON B.PatientID = P.Patient_ID
+                WHERE S.[Specialist_ID] = ? AND H.Date >= CAST(GETDATE() AS DATE) ORDER BY H.Date""";
+        statement = connection.prepareStatement(preparedQuery);
+        statement.setString(1, specialistId);
+        resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            result
+                    .append("ID: ")
+                    .append(resultSet.getString("id"))
+                    .append("\n")
+                    .append("State: ")
+                    .append(resultSet.getString("state"))
+                    .append("\n")
+                    .append("Date: ")
+                    .append(resultSet.getString("date"))
+                    .append("\n")
+                    .append("Place: ")
+                    .append(resultSet.getString("place"))
+                    .append("\n")
+                    .append("Fee: ")
+                    .append(resultSet.getString("fee"))
+                    .append("\n")
+                    .append("Patient name: ")
+                    .append(resultSet.getString("fullname"))
+                    .append("\n")
+                    .append("Sex: ")
+                    .append(resultSet.getString("sex"))
+                    .append("\n")
+                    .append("Email: ")
+                    .append(resultSet.getString("email"))
+                    .append("\n")
+                    .append("\n");
         }
-        return result.toString();
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    } finally {
+        closeConnect(connection);
     }
-    public static boolean delistHealingUpdate(String specialistTxt, String healingTxt) {
-        Connection con = null;
-        PreparedStatement stmt;
-        int rs;
-        boolean isUpdated = false;
+    return result.toString();
+} 
+
+
+    //Boundary 5 
+
+    public static boolean delistHealingUpdate(String specialistId, String healingId) {
+        Connection connection = null;
+        PreparedStatement statement;
+        int result;
+        boolean isRemoved = false;
         try {
-            con = DriverManager.getConnection(connectionUrl);
-            con.setAutoCommit(false);
-            String updateString =
+            connection = DriverManager.getConnection(connectionUrl);
+            connection.setAutoCommit(false);
+            String deleteQuery =
                     """
-                              DELETE FROM [Booking].[HealingInformation]
-                              WHERE SpecialistID = ? AND HealingInformation_ID = ?
-                              """;
-            stmt = con.prepareStatement(updateString);
-            stmt.setString(1, specialistTxt);
-            stmt.setString(2, healingTxt);
-            rs = stmt.executeUpdate();
-            if (rs > 0) {
-                isUpdated = true;
+                    DELETE FROM [Booking].[HealingInformation]
+                    WHERE SpecialistID = ? AND HealingInformation_ID = ?
+                    """;
+            statement = connection.prepareStatement(deleteQuery);
+            statement.setString(1, specialistId);
+            statement.setString(2, healingId);
+            result = statement.executeUpdate();
+            if (result > 0) {
+                isRemoved = true;
             }
-            con.commit();
+            connection.commit();
         } catch (SQLException e) {
-            return isUpdated;
+            return isRemoved;
         } finally {
-            closeConnect(con);
+            closeConnect(connection);
         }
-        return isUpdated;
+        return isRemoved;
     }
+    
     public static boolean submitSpecialistUser(
-            String accountTxt,
-            String pwdTxt,
-            String nameTxt,
-            String dobTxt,
-            String sexTxt,
-            String emailTxt,
-            String phoneTxt,
-            String idTxt,
-            String graduateTxt) {
-        Connection con = null;
+            String username,
+            String password,
+            String fullName,
+            String dob,
+            String sex,
+            String email,
+            String phone,
+            String id,
+            String graduationUniversity) {
+        Connection connection = null;
         PreparedStatement stmt1;
         PreparedStatement stmt2;
         int rs1;
         int rs2;
-        boolean isUpdated = false;
+        boolean isAdded = false;
         try {
-            con = DriverManager.getConnection(connectionUrl);
-            con.setAutoCommit(false);
-            String updateString1 =
+            connection = DriverManager.getConnection(connectionUrl);
+            connection.setAutoCommit(false);
+            String insertQuery1 =
                     """
-                              DECLARE @Username AS VARCHAR(50) = ?
-                              DECLARE @Pwd AS VARCHAR(30) = ?
-                              DECLARE @Salt AS VARCHAR(5)
-                              SET @Salt
-                                  = CONCAT(
-                                              CHAR(FLOOR(RAND() * 10) + 48),
-                                              CHAR(FLOOR(RAND() * 26) + 65),
-                                              CHAR(FLOOR(RAND() * 26) + 97),
-                                              CHAR(FLOOR(RAND() * 15) + 33),
-                                              CHAR(FLOOR(RAND() * 10) + 48))
-                              INSERT INTO [Account].[Account] ([User_name],
-                                                               [Password],
-                                                               [Salt])
-                              VALUES (@Username, HASHBYTES('SHA1', CONCAT(@Pwd, @Salt)), @Salt)
-                              """;
-            stmt1 = con.prepareStatement(updateString1);
-            stmt1.setString(1, accountTxt);
-            stmt1.setString(2, pwdTxt);
+                    DECLARE @Username AS VARCHAR(50) = ?
+                    DECLARE @Pwd AS VARCHAR(30) = ?
+                    DECLARE @Salt AS VARCHAR(5)
+                    SET @Salt
+                        = CONCAT(
+                                    CHAR(FLOOR(RAND() * 10) + 48),
+                                    CHAR(FLOOR(RAND() * 26) + 65),
+                                    CHAR(FLOOR(RAND() * 26) + 97),
+                                    CHAR(FLOOR(RAND() * 15) + 33),
+                                    CHAR(FLOOR(RAND() * 10) + 48))
+                    INSERT INTO [Account].[Account] ([User_name],
+                                                     [Password],
+                                                     [Salt])
+                    VALUES (@Username, HASHBYTES('SHA1', CONCAT(@Pwd, @Salt)), @Salt)
+                    """;
+            stmt1 = connection.prepareStatement(insertQuery1);
+            stmt1.setString(1, username);
+            stmt1.setString(2, password);
             rs1 = stmt1.executeUpdate();
-            String updateString2 =
+            String insertQuery2 =
                     """
-                              INSERT INTO [Account].[Specialist] ([UserID],
-                                                                  [FullName],
-                                                                  [DoB],
-                                                                  [Sex],
-                                                                  [Email],
-                                                                  [Phone],
-                                                                  [IdentifyNumber],
-                                                                  [GraduationUniversity])
-                              VALUES ((SELECT User_ID FROM [Account].[Account] A WHERE A.User_name = ?), ?, ?, ?, ?, ?, ?, ?)
-                              """;
-            stmt2 = con.prepareStatement(updateString2);
-            stmt2.setString(1, accountTxt);
-            stmt2.setString(2, nameTxt);
-            stmt2.setDate(3, java.sql.Date.valueOf(dobTxt));
-            stmt2.setString(4, sexTxt);
-            stmt2.setString(5, emailTxt);
-            stmt2.setString(6, phoneTxt);
-            stmt2.setString(7, idTxt);
-            stmt2.setString(8, graduateTxt);
+                    INSERT INTO [Account].[Specialist] ([UserID],
+                                                        [FullName],
+                                                        [DoB],
+                                                        [Sex],
+                                                        [Email],
+                                                        [Phone],
+                                                        [IdentifyNumber],
+                                                        [GraduationUniversity])
+                    VALUES ((SELECT User_ID FROM [Account].[Account] A WHERE A.User_name = ?), ?, ?, ?, ?, ?, ?, ?)
+                    """;
+            stmt2 = connection.prepareStatement(insertQuery2);
+            stmt2.setString(1, username);
+            stmt2.setString(2, fullName);
+            stmt2.setDate(3, java.sql.Date.valueOf(dob));
+            stmt2.setString(4, sex);
+            stmt2.setString(5, email);
+            stmt2.setString(6, phone);
+            stmt2.setString(7, id);
+            stmt2.setString(8, graduationUniversity);
             rs2 = stmt2.executeUpdate();
             if (rs1 > 0 && rs2 > 0) {
-                isUpdated = true;
+                isAdded = true;
             }
-            con.commit();
+            connection.commit();
         } catch (SQLException e) {
-            return isUpdated;
+            return isAdded;
         } finally {
-            closeConnect(con);
+            closeConnect(connection);
         }
-        return isUpdated;
-    }
+        return isAdded;
+    } 
+    
+
+    //Boundary 6 
+
     public static boolean submitPatientUser(
-            String accountTxt,
-            String pwdTxt,
-            String nameTxt,
-            String dobTxt,
-            String sexTxt,
-            String emailTxt) {
-        Connection con = null;
-        PreparedStatement stmt1;
-        PreparedStatement stmt2;
-        int rs1;
-        int rs2;
-        boolean isUpdated = false;
-        try {
-            con = DriverManager.getConnection(connectionUrl);
-            con.setAutoCommit(false);
-            String updateString1 =
-                    """
-                              DECLARE @Username AS VARCHAR(50) = ?
-                              DECLARE @Pwd AS VARCHAR(30) = ?
-                              DECLARE @Salt AS VARCHAR(5)
-                              SET @Salt
-                                  = CONCAT(
-                                              CHAR(FLOOR(RAND() * 10) + 48),
-                                              CHAR(FLOOR(RAND() * 26) + 65),
-                                              CHAR(FLOOR(RAND() * 26) + 97),
-                                              CHAR(FLOOR(RAND() * 15) + 33),
-                                              CHAR(FLOOR(RAND() * 10) + 48))
-                              INSERT INTO [Account].[Account] ([User_name],
-                                                               [Password],
-                                                               [Salt])
-                              VALUES (@Username, HASHBYTES('SHA1', CONCAT(@Pwd, @Salt)), @Salt)
-                              """;
-            stmt1 = con.prepareStatement(updateString1);
-            stmt1.setString(1, accountTxt);
-            stmt1.setString(2, pwdTxt);
-            rs1 = stmt1.executeUpdate();
-            String updateString2 =
-                    """
-                              INSERT INTO [Account].[Patient] ([UserID],
-                                                               [FullName],
-                                                               [DoB],
-                                                               [Sex],
-                                                               [Email])
-                              VALUES ((SELECT User_ID FROM [Account].[Account] A WHERE A.User_name = ?), ?, ?, ?, ?)
-                              """;
-            stmt2 = con.prepareStatement(updateString2);
-            stmt2.setString(1, accountTxt);
-            stmt2.setString(2, nameTxt);
-            stmt2.setDate(3, java.sql.Date.valueOf(dobTxt));
-            stmt2.setString(4, sexTxt);
-            stmt2.setString(5, emailTxt);
-            rs2 = stmt2.executeUpdate();
-            if (rs1 > 0 && rs2 > 0) {
-                isUpdated = true;
-            }
-            con.commit();
-        } catch (SQLException e) {
-            return isUpdated;
-        } finally {
-            closeConnect(con);
+        String username,
+        String password,
+        String fullName,
+        String dob,
+        String sex,
+        String email) {
+    Connection connection = null;
+    PreparedStatement stmt1;
+    PreparedStatement stmt2;
+    int rs1;
+    int rs2;
+    boolean isAdded = false;
+    try {
+        connection = DriverManager.getConnection(connectionUrl);
+        connection.setAutoCommit(false);
+        String insertQuery1 =
+                """
+                DECLARE @Username AS VARCHAR(50) = ?
+                DECLARE @Pwd AS VARCHAR(30) = ?
+                DECLARE @Salt AS VARCHAR(5)
+                SET @Salt
+                    = CONCAT(
+                                CHAR(FLOOR(RAND() * 10) + 48),
+                                CHAR(FLOOR(RAND() * 26) + 65),
+                                CHAR(FLOOR(RAND() * 26) + 97),
+                                CHAR(FLOOR(RAND() * 15) + 33),
+                                CHAR(FLOOR(RAND() * 10) + 48))
+                INSERT INTO [Account].[Account] ([User_name],
+                                                 [Password],
+                                                 [Salt])
+                VALUES (@Username, HASHBYTES('SHA1', CONCAT(@Pwd, @Salt)), @Salt)
+                """;
+        stmt1 = connection.prepareStatement(insertQuery1);
+        stmt1.setString(1, username);
+        stmt1.setString(2, password);
+        rs1 = stmt1.executeUpdate();
+        String insertQuery2 =
+                """
+                INSERT INTO [Account].[Patient] ([UserID],
+                                                 [FullName],
+                                                 [DoB],
+                                                 [Sex],
+                                                 [Email])
+                VALUES ((SELECT User_ID FROM [Account].[Account] A WHERE A.User_name = ?), ?, ?, ?, ?)
+                """;
+        stmt2 = connection.prepareStatement(insertQuery2);
+        stmt2.setString(1, username);
+        stmt2.setString(2, fullName);
+        stmt2.setDate(3, java.sql.Date.valueOf(dob));
+        stmt2.setString(4, sex);
+        stmt2.setString(5, email);
+        rs2 = stmt2.executeUpdate();
+        if (rs1 > 0 && rs2 > 0) {
+            isAdded = true;
         }
-        return isUpdated;
+        connection.commit();
+    } catch (SQLException e) {
+        return isAdded;
+    } finally {
+        closeConnect(connection);
     }
+    return isAdded;
+}
 
-
-    public static void showQuery(String preparedQuery, JTable resultTable) {
-        Connection con = null;
-        PreparedStatement stmt;
-        ResultSet rs;
-        try {
-            con = DriverManager.getConnection(connectionUrl);
-            stmt = con.prepareStatement(preparedQuery);
-            rs = stmt.executeQuery();
-            if (!rs.next())
-                JOptionPane.showMessageDialog(
-                        null,
-                        "No available table found! Please try again later",
-                        "Message",
-                        JOptionPane.WARNING_MESSAGE);
-            else {
-                resultTable.setModel(DbUtils.resultSetToTableModel(rs));
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Available table is found!",
-                        "Message",
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
-        } catch (SQLException e) {
-
-            StringWriter output = new StringWriter();
-            e.printStackTrace(new PrintWriter(output));
+public static void showQuery(String preparedQuery, JTable resultTable) {
+    Connection connection = null;
+    PreparedStatement statement;
+    ResultSet resultSet;
+    try {
+        connection = DriverManager.getConnection(connectionUrl);
+        statement = connection.prepareStatement(preparedQuery);
+        resultSet = statement.executeQuery();
+        if (!resultSet.next()) {
             JOptionPane.showMessageDialog(
                     null,
-                    output.toString(),
+                    "No available table found! Please try again later",
                     "Message",
                     JOptionPane.WARNING_MESSAGE);
-        } finally {
-            closeConnect(con);
+        } else {
+            resultTable.setModel(DbUtils.resultSetToTableModel(resultSet));
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Available table is found!",
+                    "Message",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
+    } catch (SQLException e) {
+        StringWriter output = new StringWriter();
+        e.printStackTrace(new PrintWriter(output));
+        JOptionPane.showMessageDialog(
+                null,
+                output.toString(),
+                "Message",
+                JOptionPane.WARNING_MESSAGE);
+    } finally {
+        closeConnect(connection);
     }
+}
 }
