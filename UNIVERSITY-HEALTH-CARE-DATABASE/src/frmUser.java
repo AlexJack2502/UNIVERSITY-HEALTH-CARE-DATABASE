@@ -1,8 +1,8 @@
 import java.util.Objects;
 import javax.swing.*;
 
-public class frmIndex extends JFrame {
-    private static frmIndex instance;
+public class frmUser extends JFrame {
+    private static frmUser instance;
     private JPasswordField pwdField;
     private JTextField userField;
     private JButton logInButton;
@@ -15,7 +15,7 @@ public class frmIndex extends JFrame {
     private JLabel pwdLabel;
     private JLabel copyrightLabel;
 
-    private frmIndex() {
+    private frmUser() {
         setContentPane(panel);
         setTitle("mindfulNESS - Homepage");
         setSize(800, 800);
@@ -40,11 +40,11 @@ public class frmIndex extends JFrame {
                                     results =
                                             ConnectSQL.showAuthenticateQuery(
                                                     userField.getText(), String.valueOf(pwdField.getPassword()));
-                                    if (Objects.equals(results[1], "Patient")) {
+                                    if (Objects.equals(results[1], "Student")) {
                                         frmPatientDashboard.getInstance().setVisible(true);
                                         setVisible(false);
-                                    } else if (Objects.equals(results[1], "Specialist")) {
-                                        frmSpecialistDashboard.getInstance().setVisible(true);
+                                    } else if (Objects.equals(results[1], "Doctor")) {
+                                        frmDoctorDashboard.getInstance().setVisible(true);
                                         setVisible(false);
                                     } else {
                                         JOptionPane.showMessageDialog(
@@ -137,9 +137,9 @@ public class frmIndex extends JFrame {
                 });
     }
 
-    public static synchronized frmIndex getInstance() {
+    public static synchronized frmUser getInstance() {
         if (instance == null) {
-            instance = new frmIndex();
+            instance = new frmUser();
         }
         return instance;
     }
