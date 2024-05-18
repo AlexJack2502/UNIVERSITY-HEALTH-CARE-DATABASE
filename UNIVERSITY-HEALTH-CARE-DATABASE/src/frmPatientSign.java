@@ -15,8 +15,7 @@ public class frmPatientSign extends JFrame {
   private JLabel dobLabel;
   private JPanel panel;
   private JButton clearAllButton;
-  private JLabel copyrightLabel;
-  private JComboBox<String> genderField;
+    private JComboBox<String> genderField;
 
   private frmPatientSign() {
     setContentPane(panel);

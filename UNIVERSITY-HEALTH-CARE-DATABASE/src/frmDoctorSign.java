@@ -26,7 +26,7 @@ public class frmDoctorSign extends JFrame {
 
   private frmDoctorSign() {
     setContentPane(panel);
-    setTitle("mindfulNESS - Doctor sign-up");
+    setTitle("UNIVERSITY HEALTH CARE - Doctor sign-up");
     setSize(800, 800);
     setLocationRelativeTo(null);
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -160,9 +160,9 @@ public class frmDoctorSign extends JFrame {
         });
   }
 
-  public static synchronized frmSpecialistSign getInstance() {
+  public static synchronized frmDoctorSign getInstance() {
     if (instance == null) {
-      instance = new frmSpecialistSign();
+      instance = new frmDoctorSign();
     }
     return instance;
   }

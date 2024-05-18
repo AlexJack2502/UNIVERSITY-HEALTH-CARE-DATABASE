@@ -8,8 +8,7 @@ public class frmBooking extends JFrame {
   private JTextField idField;
   private JButton refreshButton;
   private JTable resultTable;
-  private JLabel titleLabel;
-  private JLabel insLabel;
+    private JLabel insLabel;
   private JLabel idLabel;
   private JLabel availableLabel;
   private JLabel copyrightLabel;
