@@ -11,14 +11,14 @@ public class frmDoctorDashboard extends JFrame {
     private JLabel upcomingLabel;
     private JScrollPane recentPane;
     private JTextField placeField;
-    private JTextField feeField;
+    private JTextField priceField;
     private JTextField dateField;
     private JTextField descField;
     private JTextField extraField;
     private JLabel fillLabel;
     private JLabel placeLabel;
     private JLabel dateLabel;
-    private JLabel feeLabel;
+    private JLabel priceLabel;
     private JLabel descLabel;
     private JLabel noteLabel;
     private JLabel copyrightLabel;
@@ -146,7 +146,7 @@ public class frmDoctorDashboard extends JFrame {
                                     protected Void doInBackground() {
                                         placeField.setText("");
                                         dateField.setText("");
-                                        feeField.setText("");
+                                        priceField.setText("");
                                         descField.setText("");
                                         extraField.setText("");
                                         return null;
@@ -165,7 +165,7 @@ public class frmDoctorDashboard extends JFrame {
                     postButton.setEnabled(false);
                     if (placeField.getText().isEmpty()
                             || dateField.getText().isEmpty()
-                            || feeField.getText().isEmpty()
+                            || priceField.getText().isEmpty()
                             || descField.getText().isEmpty()) {
                         JOptionPane.showMessageDialog(
                                 null, "Field(s) are empty!", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -188,7 +188,7 @@ public class frmDoctorDashboard extends JFrame {
                                                 frmUser.getInstance().getID()[0],
                                                 placeField.getText(),
                                                 dateField.getText(),
-                                                feeField.getText(),
+                                                priceField.getText(),
                                                 descField.getText(),
                                                 extraField.getText())) {
                                             JOptionPane.showMessageDialog(
@@ -198,7 +198,7 @@ public class frmDoctorDashboard extends JFrame {
                                                     JOptionPane.INFORMATION_MESSAGE);
                                             placeField.setText("");
                                             dateField.setText("");
-                                            feeField.setText("");
+                                            priceField.setText("");
                                             descField.setText("");
                                             extraField.setText("");
                                             recentArea.selectAll();

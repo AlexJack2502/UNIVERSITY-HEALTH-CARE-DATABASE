@@ -40,7 +40,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="895cd" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
+          <component id="895cd" class="javax.swing.JTextArea" binding="recentArea">
             <constraints/>
             <properties>
               <text value=""/>

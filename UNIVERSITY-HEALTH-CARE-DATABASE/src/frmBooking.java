@@ -96,7 +96,7 @@ public class frmBooking extends JFrame {
                 new SwingWorker<>() {
                   @Override
                   protected Void doInBackground() {
-                    frmPatientDashboard.getInstance().setVisible(true);
+                    frmStudentDashboard.getInstance().setVisible(true);
                     setVisible(false);
                     return null;
                   }

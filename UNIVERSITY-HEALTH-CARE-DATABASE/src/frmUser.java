@@ -41,7 +41,7 @@ public class frmUser extends JFrame {
                                             ConnectSQL.showAuthenticateQuery(
                                                     userField.getText(), String.valueOf(pwdField.getPassword()));
                                     if (Objects.equals(results[1], "Student")) {
-                                        frmPatientDashboard.getInstance().setVisible(true);
+                                        frmStudentDashboard.getInstance().setVisible(true);
                                         setVisible(false);
                                     } else if (Objects.equals(results[1], "Doctor")) {
                                         frmDoctorDashboard.getInstance().setVisible(true);

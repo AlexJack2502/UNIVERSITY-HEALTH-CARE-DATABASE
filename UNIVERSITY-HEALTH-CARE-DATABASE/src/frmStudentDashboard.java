@@ -1,7 +1,7 @@
 import javax.swing.*;
 
-public class frmPatientDashboard extends JFrame {
-    private static frmPatientDashboard instance;
+public class frmStudentDashboard extends JFrame {
+    private static frmStudentDashboard instance;
     private JButton logOutButton;
     private JButton startSelfDiagButton;
     private JTextField searchField;
@@ -19,7 +19,7 @@ public class frmPatientDashboard extends JFrame {
     private JLabel insLabel;
     private JButton cancelHealingButton;
 
-    private frmPatientDashboard() {
+    private frmStudentDashboard() {
         setContentPane(panel);
         setTitle("mindfulNESS - Patient Dashboard");
         setSize(1200, 800);
@@ -263,9 +263,9 @@ public class frmPatientDashboard extends JFrame {
                 });
     }
 
-    public static synchronized frmPatientDashboard getInstance() {
+    public static synchronized frmStudentDashboard getInstance() {
         if (instance == null) {
-            instance = new frmPatientDashboard();
+            instance = new frmStudentDashboard();
         }
         return instance;
     }
