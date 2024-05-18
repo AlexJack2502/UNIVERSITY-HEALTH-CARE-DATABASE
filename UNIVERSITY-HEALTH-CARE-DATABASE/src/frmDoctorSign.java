@@ -94,8 +94,8 @@ public class frmDoctorSign extends JFrame {
                   @Override
                   protected Void doInBackground() {
                     if (ConnectSQL.submitSpecialistUser(
-                        frmIndex.getInstance().getCredentials()[0],
-                        frmIndex.getInstance().getCredentials()[1],
+                        frmUser.getInstance().getCredentials()[0],
+                        frmUser.getInstance().getCredentials()[1],
                         fullNameField.getText(),
                         dobField.getText(),
                         String.valueOf(genderField.getSelectedItem()),
@@ -106,7 +106,7 @@ public class frmDoctorSign extends JFrame {
                       JOptionPane.showMessageDialog(
                           null,
                           "Account: "
-                              + frmIndex.getInstance().getCredentials()[0]
+                              + frmUser.getInstance().getCredentials()[0]
                               + " registered successfully. Thank you!",
                           "Success",
                           JOptionPane.INFORMATION_MESSAGE);

@@ -85,7 +85,7 @@ public class frmPatientDashboard extends JFrame {
                                     @Override
                                     protected Void doInBackground() {
                                         if (ConnectSQL.submitPasswordUpdate(
-                                                frmIndex.getInstance().getCredentials()[0],
+                                                frmUser.getInstance().getCredentials()[0],
                                                 String.valueOf(oldPwd.getPassword()),
                                                 String.valueOf(newPwd.getPassword()))) {
                                             JOptionPane.showMessageDialog(
@@ -225,7 +225,7 @@ public class frmPatientDashboard extends JFrame {
                                         @Override
                                         protected Void doInBackground() {
                                             if (ConnectSQL.cancelHealingUpdate(
-                                                    frmIndex.getInstance().getID()[0], idHeal)) {
+                                                    frmUser.getInstance().getID()[0], idHeal)) {
                                                 JOptionPane.showMessageDialog(
                                                         null,
                                                         "Healing with ID: "
@@ -236,7 +236,7 @@ public class frmPatientDashboard extends JFrame {
                                                 recentArea.selectAll();
                                                 recentArea.replaceSelection("");
                                                 recentArea.setText(
-                                                        ConnectSQL.showPatientBookingQuery(frmIndex.getInstance().getID()[0]));
+                                                        ConnectSQL.showPatientBookingQuery(frmUser.getInstance().getID()[0]));
                                             } else {
                                                 JOptionPane.showMessageDialog(
                                                         null,
@@ -277,11 +277,11 @@ public class frmPatientDashboard extends JFrame {
             insLabel.setText(
                     "Welcome back, "
                             + ConnectSQL.showNameQuery(
-                            frmIndex.getInstance().getID()[0], frmIndex.getInstance().getID()[1])
+                            frmUser.getInstance().getID()[0], frmUser.getInstance().getID()[1])
                             + "!");
             recentArea.selectAll();
             recentArea.replaceSelection("");
-            recentArea.setText(ConnectSQL.showPatientBookingQuery(frmIndex.getInstance().getID()[0]));
+            recentArea.setText(ConnectSQL.showPatientBookingQuery(frmUser.getInstance().getID()[0]));
             recentArea.setEditable(false);
         }
     }

@@ -37,13 +37,13 @@ public class frmRoles extends JFrame {
                     JOptionPane.QUESTION_MESSAGE);
             if (option2 == JOptionPane.YES_OPTION) {
               if (String.valueOf(inputPwd.getPassword())
-                  .equals(frmIndex.getInstance().getCredentials()[1])) {
+                  .equals(frmUser.getInstance().getCredentials()[1])) {
                 patientButton.setEnabled(false);
                 SwingWorker<Void, Void> worker =
                     new SwingWorker<>() {
                       @Override
                       protected Void doInBackground() {
-                        frmPatientSign.getInstance().setVisible(true);
+                        frmStudentSign.getInstance().setVisible(true);
                         setVisible(false);
                         return null;
                       }
@@ -85,14 +85,14 @@ public class frmRoles extends JFrame {
                     JOptionPane.QUESTION_MESSAGE);
             if (option2 == JOptionPane.YES_OPTION) {
               if (String.valueOf(inputPwd.getPassword())
-                  .equals(frmIndex.getInstance().getCredentials()[1])) {
+                  .equals(frmUser.getInstance().getCredentials()[1])) {
 
                 specialistButton.setEnabled(false);
                 SwingWorker<Void, Void> worker =
                     new SwingWorker<>() {
                       @Override
                       protected Void doInBackground() {
-                        frmSpecialistSign.getInstance().setVisible(true);
+                        frmDoctorSign.getInstance().setVisible(true);
                         setVisible(false);
                         return null;
                       }
@@ -128,7 +128,7 @@ public class frmRoles extends JFrame {
                 new SwingWorker<>() {
                   @Override
                   protected Void doInBackground() {
-                    frmIndex.getInstance().setVisible(true);
+                    frmUser.getInstance().setVisible(true);
                     setVisible(false);
                     return null;
                   }

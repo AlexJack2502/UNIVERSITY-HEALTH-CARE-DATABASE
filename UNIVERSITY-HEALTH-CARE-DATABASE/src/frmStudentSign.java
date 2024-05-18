@@ -1,7 +1,7 @@
 import javax.swing.*;
 
-public class frmPatientSign extends JFrame {
-  private static frmPatientSign instance;
+public class frmStudentSign extends JFrame {
+  private static frmStudentSign instance;
   private JButton goBackButton;
   private JButton confirmButton;
   private JTextField fullNameField;
@@ -17,7 +17,7 @@ public class frmPatientSign extends JFrame {
   private JButton clearAllButton;
     private JComboBox<String> genderField;
 
-  private frmPatientSign() {
+  private frmStudentSign() {
     setContentPane(panel);
     setTitle("mindfulNESS - Patient sign-up");
     setSize(700, 700);
@@ -78,8 +78,8 @@ public class frmPatientSign extends JFrame {
                   @Override
                   protected Void doInBackground() {
                     if (ConnectSQL.submitPatientUser(
-                        frmIndex.getInstance().getCredentials()[0],
-                        frmIndex.getInstance().getCredentials()[1],
+                        frmUser.getInstance().getCredentials()[0],
+                        frmUser.getInstance().getCredentials()[1],
                         fullNameField.getText(),
                         dobField.getText(),
                         String.valueOf(genderField.getSelectedItem()),
@@ -87,7 +87,7 @@ public class frmPatientSign extends JFrame {
                       JOptionPane.showMessageDialog(
                           null,
                           "Account: "
-                              + frmIndex.getInstance().getCredentials()[0]
+                              + frmUser.getInstance().getCredentials()[0]
                               + " registered successfully. Thank you!",
                           "Success",
                           JOptionPane.INFORMATION_MESSAGE);
@@ -145,9 +145,9 @@ public class frmPatientSign extends JFrame {
         });
   }
 
-  public static synchronized frmPatientSign getInstance() {
+  public static synchronized frmStudentSign getInstance() {
     if (instance == null) {
-      instance = new frmPatientSign();
+      instance = new frmStudentSign();
     }
     return instance;
   }

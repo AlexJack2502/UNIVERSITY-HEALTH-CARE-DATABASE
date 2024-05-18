@@ -21,7 +21,7 @@ public class frmSignDone extends JFrame {
               new SwingWorker<>() {
                 @Override
                 protected Void doInBackground() {
-                  frmIndex.getInstance().setVisible(true);
+                  frmUser.getInstance().setVisible(true);
                   setVisible(false);
                   return null;
                 }

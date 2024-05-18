@@ -130,7 +130,7 @@ public class frmBooking extends JFrame {
                   @Override
                   protected Void doInBackground() {
                     if (ConnectSQL.submitPatientHealingUpdate(
-                        frmIndex.getInstance().getID()[0], idField.getText())) {
+                        frmUser.getInstance().getID()[0], idField.getText())) {
                       idField.setText("");
                       ConnectSQL.showAvailableHealingQuery(resultTable);
                       JOptionPane.showMessageDialog(
