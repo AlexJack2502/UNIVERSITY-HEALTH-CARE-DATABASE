@@ -5,12 +5,10 @@ public class frmRoles extends JFrame {
   private JButton patientButton;
   private JButton specialistButton;
   private JLabel insLabel;
-  private JLabel titleLabel;
-  private JPanel panel;
+    private JPanel panel;
   private JButton goBackButton;
-  private JLabel copyrightLabel;
 
-  private frmRoles() {
+    private frmRoles() {
     setContentPane(panel);
     setTitle("mindfulNESS - Choose your role");
     setSize(500, 500);
