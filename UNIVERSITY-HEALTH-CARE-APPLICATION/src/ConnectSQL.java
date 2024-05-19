@@ -168,7 +168,7 @@ public class ConnectSQL {
                     """
                             SELECT T.IllnessType AS [Symptom], M.Name AS [Solution], M.Description AS [Description], M.Name AS [Medicine], M.Quantity AS [Quantity]
                             FROM [Treatment].[Treatment] T, [Treatment].[Medicine] M
-                            WHERE T.Treat_ID = M.Treatment_ID""";
+                            WHERE T.Treat_ID = M.Treatment_ID AND T.IllnessType = ?""";
             stmt = con.prepareStatement(preparedQuery);
             stmt.setString(1, queryTxt);
             rs = stmt.executeQuery();
