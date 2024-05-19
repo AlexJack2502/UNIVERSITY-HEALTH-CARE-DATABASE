@@ -128,7 +128,7 @@ public class frmBooking extends JFrame {
                               new SwingWorker<>() {
                                   @Override
                                   protected Void doInBackground() {
-                                      if (ConnectSQL.submitPatientHealingUpdate(
+                                      if (ConnectSQL.submitStudentHealingUpdate(
                                               frmHome.getInstance().getID()[0], idField.getText())) {
                                           idField.setText("");
                                           ConnectSQL.showAvailableAppointmentQuery(resultTable);
