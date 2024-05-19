@@ -54,7 +54,7 @@ public class ConnectSQL {
             closeConnect(con);
         }
     }
-    public static boolean submitPatientHealingUpdate(String studentTxt, String appointmentTxt) {
+    public static boolean submitStudentHealingUpdate(String studentTxt, String appointmentTxt) {
         Connection con = null;
         PreparedStatement stmt;
         int rs;
@@ -193,7 +193,7 @@ public class ConnectSQL {
         }
         return result.toString();
     }
-    public static boolean cancelHealingUpdate(String patientTxt, String healingTxt) {
+    public static boolean cancelHealingUpdate(String studentTxt, String healingTxt) {
         Connection con = null;
         PreparedStatement stmt;
         int rs;
@@ -207,7 +207,7 @@ public class ConnectSQL {
                             WHERE Student_ID = ? AND Appointment_ID = ?
                             """;
             stmt = con.prepareStatement(updateString);
-            stmt.setString(1, patientTxt);
+            stmt.setString(1, studentTxt);
             stmt.setString(2, healingTxt);
             rs = stmt.executeUpdate();
             if (rs > 0) {
@@ -222,7 +222,7 @@ public class ConnectSQL {
         return isUpdated;
     }
 
-    public static String showPatientBookingQuery(String patientTxt) {
+    public static String showStudentBookingQuery(String studentTxt) {
         Connection con = null;
         PreparedStatement stmt;
         ResultSet rs;
@@ -236,7 +236,7 @@ public class ConnectSQL {
                             WHERE D.D_ID = A.Doctor_ID AND S.St_ID = A.Student_ID AND S.St_ID = ? AND A.Date >= CAST(GETDATE() AS DATE)
                             ORDER BY A.Date ASC""";
             stmt = con.prepareStatement(preparedQuery);
-            stmt.setString(1, patientTxt);
+            stmt.setString(1, studentTxt);
             rs = stmt.executeQuery();
             while (rs.next()) {
                 result
@@ -319,8 +319,8 @@ public class ConnectSQL {
             String updateString =
                     """
                             SELECT*FROM Appointment.Appointment;
-                            INSERT INTO [Appointment].[Appointment] ([Doctor_ID], [Student_ID], [Date], [HealthStatus], [BookingStatus]
-                            VALUES (?, ?, ?, ?,?))""";
+                            INSERT INTO [Appointment].[Appointment] ([Doctor_ID], [Student_ID], [Date], [HealthStatus], [BookingStatus])
+                            VALUES (?, ?, ?, ?,?)""";
             stmt = con.prepareStatement(updateString);
             stmt.setString(1, doctorTxt);
             stmt.setString(2, studentTxt);
@@ -342,7 +342,7 @@ public class ConnectSQL {
         return isUpdated;
     }
 
-    public static String showDoctorBookingQuery(String specialistTxt) {
+    public static String showDoctorBookingQuery(String doctorTxt) {
         Connection con = null;
         PreparedStatement stmt;
         ResultSet rs;
@@ -364,7 +364,7 @@ public class ConnectSQL {
                             WHERE AD.Doctor_ID = ? AND A.Date >= CAST(GETDATE() AS Date)
                             ORDER BY A.Date ASC""";
             stmt = con.prepareStatement(preparedQuery);
-            stmt.setString(1, specialistTxt);
+            stmt.setString(1, doctorTxt);
             rs = stmt.executeQuery();
             while (rs.next()) {
                 result
@@ -380,7 +380,7 @@ public class ConnectSQL {
                         .append("Price: ")
                         .append(rs.getString("Price"))
                         .append("\n")
-                        .append("Patient name: ")
+                        .append("Student name: ")
                         .append(rs.getString("FullName"))
                         .append("\n")
                         .append("Gender: ")
@@ -410,7 +410,7 @@ public class ConnectSQL {
             String updateString =
                     """
                     DELETE FROM [Appointment].[Doctor_Appointment]
-                    WHERE Student_ID = ? AND Appointment_ID = ?""";
+                    WHERE Doctor_ID = ? AND Appointment_ID = ?""";
             stmt = con.prepareStatement(updateString);
             stmt.setString(1, doctorTxt);
             stmt.setString(2, appointmentTxt);
