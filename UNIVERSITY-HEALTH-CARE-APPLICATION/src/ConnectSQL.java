@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class ConnectSQL {
     static final String connectionUrl =
-            "jdbc:sqlserver://sql.bsite.net\\MSSQL2016;databaseName=monoalice_PDM_Lab5;user=monoalice_PDM_Lab5;password=MonoAlice;encrypt=true;trustServerCertificate=true;";
+         "jdbc:sqlserver://sql.bsite.net\\MSSQL2016;databaseName=monoalice_UniversityHealthCare;user=monoalice_UniversityHealthCare;password=hehe;encrypt=true;trustServerCertificate=true;";
 
     public static void closeConnect(Connection con) {
         if (con != null) {
