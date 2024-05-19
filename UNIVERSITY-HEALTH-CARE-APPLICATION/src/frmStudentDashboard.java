@@ -8,7 +8,6 @@ public class frmStudentDashboard extends JFrame {
     private JTextArea resultArea;
     private JPanel panel;
     private JTextArea recentArea;
-    private JButton healButton;
     private JButton resetPwdButton;
     private JPanel searchPanel;
     private JLabel recentLabel;
@@ -16,6 +15,8 @@ public class frmStudentDashboard extends JFrame {
     private JLabel insLabel;
     private JButton cancelHealingButton;
     private JLabel availableLabel;
+    private JButton submitButton;
+    private JLabel titleLabel;
 
     private frmStudentDashboard() {
         setContentPane(panel);
@@ -160,9 +161,9 @@ public class frmStudentDashboard extends JFrame {
                             };
                     worker.execute();
                 });
-        healButton.addActionListener(
+        submitButton.addActionListener(
                 e -> {
-                    healButton.setEnabled(false);
+                    submitButton.setEnabled(false);
                     SwingWorker<Void, Void> worker =
                             new SwingWorker<>() {
                                 @Override
@@ -175,7 +176,7 @@ public class frmStudentDashboard extends JFrame {
 
                                 @Override
                                 protected void done() {
-                                    healButton.setEnabled(true);
+                                    submitButton.setEnabled(true);
                                 }
                             };
                     worker.execute();

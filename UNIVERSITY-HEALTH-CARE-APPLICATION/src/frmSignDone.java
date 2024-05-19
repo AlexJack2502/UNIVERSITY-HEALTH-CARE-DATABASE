@@ -2,7 +2,7 @@ import javax.swing.*;
 
 public class frmSignDone extends JFrame {
     private static frmSignDone instance;
-    private JButton goToLogInButton;
+    private JButton backToHomeButton;
     private JLabel insLabel;
     private JPanel panel;
 
@@ -12,9 +12,9 @@ public class frmSignDone extends JFrame {
         setSize(500, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        goToLogInButton.addActionListener(
+        backToHomeButton.addActionListener(
                 e -> {
-                    goToLogInButton.setEnabled(false);
+                    backToHomeButton.setEnabled(false);
                     SwingWorker<Void, Void> worker =
                             new SwingWorker<>() {
                                 @Override
@@ -26,7 +26,7 @@ public class frmSignDone extends JFrame {
 
                                 @Override
                                 protected void done() {
-                                    goToLogInButton.setEnabled(true);
+                                    backToHomeButton.setEnabled(true);
                                 }
                             };
                     worker.execute();

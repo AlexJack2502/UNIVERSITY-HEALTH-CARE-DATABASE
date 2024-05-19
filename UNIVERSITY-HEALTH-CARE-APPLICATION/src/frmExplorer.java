@@ -3,7 +3,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class frmExplorer extends JFrame {
   private static frmExplorer instance;
-  private JButton goBackToLoginButton;
+  private JButton backToHomeButton;
   private JTextField queryField;
   private JTable resultTable;
   private JButton runQueryButton;
@@ -18,7 +18,7 @@ public class frmExplorer extends JFrame {
     setSize(1200, 800);
     setLocationRelativeTo(null);
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    goBackToLoginButton.addActionListener(
+    backToHomeButton.addActionListener(
         e -> {
           int option =
               JOptionPane.showConfirmDialog(
@@ -28,7 +28,7 @@ public class frmExplorer extends JFrame {
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.QUESTION_MESSAGE);
           if (option == JOptionPane.YES_OPTION) {
-            goBackToLoginButton.setEnabled(false);
+            backToHomeButton.setEnabled(false);
             SwingWorker<Void, Void> worker =
                 new SwingWorker<>() {
                   @Override
@@ -40,7 +40,7 @@ public class frmExplorer extends JFrame {
 
                   @Override
                   protected void done() {
-                    goBackToLoginButton.setEnabled(true);
+                    backToHomeButton.setEnabled(true);
                   }
                 };
             worker.execute();

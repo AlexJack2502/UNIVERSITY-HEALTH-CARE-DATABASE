@@ -8,7 +8,7 @@
     <properties/>
     <border type="none"/>
     <children>
-      <component id="30b30" class="javax.swing.JButton" binding="patientButton">
+      <component id="30b30" class="javax.swing.JButton" binding="studentButton">
         <constraints>
           <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -57,7 +57,7 @@
           <text value="UNIVERSITY HEALTH CARE "/>
         </properties>
       </component>
-      <component id="e3614" class="javax.swing.JLabel">
+      <component id="e3614" class="javax.swing.JLabel" binding="insLabel">
         <constraints>
           <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -67,7 +67,7 @@
           <text value="Who are you?"/>
         </properties>
       </component>
-      <component id="8d352" class="javax.swing.JButton" binding="specialistButton">
+      <component id="8d352" class="javax.swing.JButton" binding="doctorButton">
         <constraints>
           <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>

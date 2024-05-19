@@ -2,10 +2,11 @@ import javax.swing.*;
 
 public class frmSelect extends JFrame {
     private static frmSelect instance;
-    private JButton patientButton;
-    private JButton specialistButton;
+    private JButton studentButton;
+    private JButton doctorButton;
     private JPanel panel;
     private JButton goBackButton;
+    private JLabel insLabel;
 
     private frmSelect() {
         setContentPane(panel);
@@ -13,7 +14,7 @@ public class frmSelect extends JFrame {
         setSize(500, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        patientButton.addActionListener(
+        studentButton.addActionListener(
                 e -> {
                     int option =
                             JOptionPane.showConfirmDialog(
@@ -35,7 +36,7 @@ public class frmSelect extends JFrame {
                         if (option2 == JOptionPane.YES_OPTION) {
                             if (String.valueOf(inputPwd.getPassword())
                                     .equals(frmHome.getInstance().getCredentials()[1])) {
-                                patientButton.setEnabled(false);
+                                studentButton.setEnabled(false);
                                 SwingWorker<Void, Void> worker =
                                         new SwingWorker<>() {
                                             @Override
@@ -47,7 +48,7 @@ public class frmSelect extends JFrame {
 
                                             @Override
                                             protected void done() {
-                                                patientButton.setEnabled(true);
+                                                studentButton.setEnabled(true);
                                             }
                                         };
                                 worker.execute();
@@ -61,7 +62,7 @@ public class frmSelect extends JFrame {
                         }
                     }
                 });
-        specialistButton.addActionListener(
+        doctorButton.addActionListener(
                 e -> {
                     int option =
                             JOptionPane.showConfirmDialog(
@@ -84,7 +85,7 @@ public class frmSelect extends JFrame {
                             if (String.valueOf(inputPwd.getPassword())
                                     .equals(frmHome.getInstance().getCredentials()[1])) {
 
-                                specialistButton.setEnabled(false);
+                                doctorButton.setEnabled(false);
                                 SwingWorker<Void, Void> worker =
                                         new SwingWorker<>() {
                                             @Override
@@ -96,7 +97,7 @@ public class frmSelect extends JFrame {
 
                                             @Override
                                             protected void done() {
-                                                specialistButton.setEnabled(true);
+                                                doctorButton.setEnabled(true);
                                             }
                                         };
                                 worker.execute();
@@ -149,7 +150,7 @@ public class frmSelect extends JFrame {
 
     public static class frmSignDone extends JFrame {
         private static frmSignDone instance;
-        private JButton goToLogInButton;
+        private JButton backToHomeButton;
         private JLabel insLabel;
         private JPanel panel;
 
@@ -159,9 +160,9 @@ public class frmSelect extends JFrame {
             setSize(500, 500);
             setLocationRelativeTo(null);
             setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            goToLogInButton.addActionListener(
+            backToHomeButton.addActionListener(
                     e -> {
-                        goToLogInButton.setEnabled(false);
+                        backToHomeButton.setEnabled(false);
                         SwingWorker<Void, Void> worker =
                                 new SwingWorker<>() {
                                     @Override
@@ -173,7 +174,7 @@ public class frmSelect extends JFrame {
 
                                     @Override
                                     protected void done() {
-                                        goToLogInButton.setEnabled(true);
+                                        backToHomeButton.setEnabled(true);
                                     }
                                 };
                         worker.execute();

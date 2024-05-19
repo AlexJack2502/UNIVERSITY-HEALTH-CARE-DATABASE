@@ -100,11 +100,6 @@
           </component>
         </children>
       </scrollpane>
-      <hspacer id="fdd12">
-        <constraints>
-          <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </hspacer>
       <component id="86ae9" class="javax.swing.JButton" binding="resetPwdButton">
         <constraints>
           <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -127,7 +122,7 @@
           <text value="CANCEL APPOINTMENT"/>
         </properties>
       </component>
-      <component id="ffed7" class="javax.swing.JLabel">
+      <component id="ffed7" class="javax.swing.JLabel" binding="titleLabel">
         <constraints>
           <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -135,16 +130,6 @@
           <font name="Google Sans" size="30" style="1"/>
           <foreground color="-16744160"/>
           <text value="UNIVERSITY HEALTH CARE "/>
-        </properties>
-      </component>
-      <component id="f6357" class="javax.swing.JLabel">
-        <constraints>
-          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <font name="Google Sans" size="26" style="1"/>
-          <icon value="image/logo-stu.png"/>
-          <text value="STUDENT"/>
         </properties>
       </component>
       <component id="47e07" class="javax.swing.JLabel" binding="availableLabel">
@@ -155,6 +140,27 @@
           <font name="Google Sans" size="20" style="0"/>
           <foreground color="-16777216"/>
           <text value="You can search the disease here!"/>
+        </properties>
+      </component>
+      <component id="f822a" class="javax.swing.JButton" binding="submitButton">
+        <constraints>
+          <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <background color="-10104949"/>
+          <font name="Google Sans" size="18" style="1"/>
+          <foreground color="-327692"/>
+          <text value="SUBMIT"/>
+        </properties>
+      </component>
+      <component id="f6357" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="Google Sans" size="26" style="1"/>
+          <icon value="image/logo-stu.png"/>
+          <text value="STUDENT"/>
         </properties>
       </component>
     </children>

@@ -15,7 +15,6 @@ public class frmDoctorDashboard extends JFrame {
     private JTextField healthField;
     private JTextField bookingField;
     private JLabel fillLabel;
-    private JLabel placeLabel;
     private JLabel dateLabel;
     private JLabel priceLabel;
     private JLabel descLabel;
@@ -24,7 +23,6 @@ public class frmDoctorDashboard extends JFrame {
     private JButton resetPwdButton;
     private JButton clearAllButton;
     private JButton delistHealingButton;
-
     private frmDoctorDashboard() {
         setContentPane(panel);
         setTitle("UNIVERSITY HEALTH CARE - Doctor Dashboard");

@@ -28,16 +28,6 @@
           <text value="Password"/>
         </properties>
       </component>
-      <component id="31f84" class="javax.swing.JPasswordField" binding="pwdField">
-        <constraints>
-          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties>
-          <font name="Google Sans" size="20" style="0"/>
-        </properties>
-      </component>
       <component id="fd463" class="javax.swing.JLabel" binding="titleLabel">
         <constraints>
           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
@@ -92,17 +82,6 @@
           <text value=""/>
         </properties>
       </component>
-      <component id="44b9f" class="javax.swing.JPasswordField" binding="userField">
-        <constraints>
-          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties>
-          <font name="Google Sans" size="20" style="0"/>
-          <foreground color="-16777216"/>
-        </properties>
-      </component>
       <component id="ed518" class="javax.swing.JButton" binding="explorerModeButton">
         <constraints>
           <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -112,6 +91,26 @@
           <font name="Google Sans" size="18" style="1"/>
           <foreground color="-327692"/>
           <text value="EXPLORER MODE"/>
+        </properties>
+      </component>
+      <component id="b8335" class="javax.swing.JTextField" binding="userField">
+        <constraints>
+          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="866e" class="javax.swing.JPasswordField" binding="pwdField">
+        <constraints>
+          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value=""/>
         </properties>
       </component>
     </children>
