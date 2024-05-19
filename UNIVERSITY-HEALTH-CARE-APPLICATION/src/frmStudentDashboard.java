@@ -215,7 +215,7 @@ public class frmStudentDashboard extends JFrame {
                                                 recentArea.selectAll();
                                                 recentArea.replaceSelection("");
                                                 recentArea.setText(
-                                                        ConnectSQL.showPatientBookingQuery(frmHome.getInstance().getID()[0]));
+                                                        ConnectSQL.showStudentBookingQuery(frmHome.getInstance().getID()[0]));
                                             } else {
                                                 JOptionPane.showMessageDialog(
                                                         null,
@@ -260,7 +260,7 @@ public class frmStudentDashboard extends JFrame {
                             + "!");
             recentArea.selectAll();
             recentArea.replaceSelection("");
-            recentArea.setText(ConnectSQL.showPatientBookingQuery(frmHome.getInstance().getID()[0]));
+            recentArea.setText(ConnectSQL.showStudentBookingQuery(frmHome.getInstance().getID()[0]));
             recentArea.setEditable(false);
         }
     }
