@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class ConnectSQL {
     static final String connectionUrl =
-         "jdbc:sqlserver://sql.bsite.net\\MSSQL2016;databaseName=monoalice_UniversityHealthCare;user=monoalice_UniversityHealthCare;password=hehe;encrypt=true;trustServerCertificate=true;";
+            "jdbc:sqlserver://sql.bsite.net\\MSSQL2016;databaseName=monoalice_UniversityHealthCare;user=monoalice_UniversityHealthCare;password=hehe;encrypt=true;trustServerCertificate=true;";
 
     public static void closeConnect(Connection con) {
         if (con != null) {
@@ -94,16 +94,18 @@ public class ConnectSQL {
                             DECLARE @Pwd AS VARCHAR(255) = ?
                             SELECT
                             CASE
-                            	WHEN U.U_ID = S.User_ID AND S.User_ID IS NOT NULL THEN 'Student'
-                            	WHEN U.U_ID = D.User_ID AND D.User_ID IS NOT NULL THEN 'Doctor'
-                            	ELSE NULL
-                            	END AS Role,
+                            WHEN U.U_ID = S.User_ID AND S.User_ID IS NOT NULL THEN 'Student'
+                            WHEN U.U_ID = D.User_ID AND D.User_ID IS NOT NULL THEN 'Doctor'
+                            ELSE NULL
+                            END AS Role,
                             CASE
-                            	WHEN U.U_ID = S.User_ID AND S.User_ID IS NOT NULL THEN S.St_ID
-                            	WHEN U.U_ID = D.User_ID AND D.User_ID IS NOT NULL THEN D.D_ID
-                            	ELSE NULL
-                            	END AS ID
-                            FROM [Account].[User] U, [Account].[Student] S, [Account].[Doctor] D
+                            WHEN U.U_ID = S.User_ID AND S.User_ID IS NOT NULL THEN S.St_ID
+                            WHEN U.U_ID = D.User_ID AND D.User_ID IS NOT NULL THEN D.D_ID
+                            ELSE NULL
+                            END AS ID
+                            FROM [Account].[User] U
+                            FULL JOIN [Account].[Student] S ON U.U_ID = S.User_ID
+                            FULL JOIN [Account].[Doctor] D ON U.U_ID = D.User_ID
                             WHERE U.User_name = @UserName AND U.Password = @Pwd
                             """;
             stmt = con.prepareStatement(preparedQuery);
