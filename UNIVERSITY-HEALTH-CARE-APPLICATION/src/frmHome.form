@@ -82,7 +82,7 @@
           <text value=""/>
         </properties>
       </component>
-      <component id="ed518" class="javax.swing.JButton" binding="explorerModeButton">
+      <component id="ed518" class="javax.swing.JButton" binding="optionalButton">
         <constraints>
           <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -90,7 +90,7 @@
           <background color="-10104949"/>
           <font name="Google Sans" size="18" style="1"/>
           <foreground color="-327692"/>
-          <text value="EXPLORER MODE"/>
+          <text value="OPTIONAL"/>
         </properties>
       </component>
       <component id="b8335" class="javax.swing.JTextField" binding="userField">

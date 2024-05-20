@@ -8,7 +8,7 @@ public class frmHome extends JFrame {
     private JButton logInButton;
     private JButton signUpButton;
     private JPanel panel;
-    private JButton explorerModeButton;
+    private JButton optionalButton;
     private String[] results;
     private JLabel titleLabel;
     private JLabel userLabel;
@@ -97,9 +97,9 @@ public class frmHome extends JFrame {
                             };
                     worker.execute();
                 });
-        explorerModeButton.addActionListener(
+        optionalButton.addActionListener(
                 e -> {
-                    explorerModeButton.setEnabled(false);
+                    optionalButton.setEnabled(false);
                     SwingWorker<Void, Void> worker =
                             new SwingWorker<>() {
                                 @Override
@@ -130,7 +130,7 @@ public class frmHome extends JFrame {
 
                                 @Override
                                 protected void done() {
-                                    explorerModeButton.setEnabled(true);
+                                    optionalButton.setEnabled(true);
                                 }
                             };
                     worker.execute();
