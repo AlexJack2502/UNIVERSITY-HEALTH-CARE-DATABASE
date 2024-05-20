@@ -115,7 +115,7 @@ public class frmHome extends JFrame {
                                                     JOptionPane.QUESTION_MESSAGE);
                                     if (option == JOptionPane.YES_OPTION) {
                                         if (String.valueOf(masterPwd.getPassword()).equals("pdm")) {
-                                            frmExplorer.getInstance().setVisible(true);
+                                            frmOption.getInstance().setVisible(true);
                                             setVisible(false);
                                         } else {
                                             JOptionPane.showMessageDialog(

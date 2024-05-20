@@ -17,12 +17,12 @@ public class frmDoctorDashboard extends JFrame {
     private JLabel fillLabel;
     private JLabel dateLabel;
     private JLabel priceLabel;
-    private JLabel descLabel;
-    private JLabel noteLabel;
     private JLabel copyrightLabel;
     private JButton resetPwdButton;
     private JButton clearAllButton;
     private JButton delistHealingButton;
+    private JButton updateButton;
+
     private frmDoctorDashboard() {
         setContentPane(panel);
         setTitle("UNIVERSITY HEALTH CARE - Doctor Dashboard");
@@ -277,8 +277,44 @@ public class frmDoctorDashboard extends JFrame {
                                 null, "Nothing to delisted!", "Warning", JOptionPane.WARNING_MESSAGE);
                     }
                 });
+        updateButton.addActionListener(
+                e -> {
+                    updateButton.setEnabled(false);
+                    SwingWorker<Void, Void> worker =
+                            new SwingWorker<>() {
+                                @Override
+                                protected Void doInBackground() {
+                                    JPasswordField masterPwd = new JPasswordField();
+                                    Object[] message = {"Master password: ", masterPwd};
+                                    int option =
+                                            JOptionPane.showConfirmDialog(
+                                                    null,
+                                                    message,
+                                                    "Password Required",
+                                                    JOptionPane.YES_NO_OPTION,
+                                                    JOptionPane.QUESTION_MESSAGE);
+                                    if (option == JOptionPane.YES_OPTION) {
+                                        if (String.valueOf(masterPwd.getPassword()).equals("pdm")) {
+                                            frmOption.getInstance().setVisible(true);
+                                            setVisible(false);
+                                        } else {
+                                            JOptionPane.showMessageDialog(
+                                                    null,
+                                                    "Master Password not correct!",
+                                                    "Access Denied",
+                                                    JOptionPane.WARNING_MESSAGE);
+                                        }
+                                    }
+                                    return null;
+                                }
+                                @Override
+                                protected void done() {
+                                    updateButton.setEnabled(true);
+                                }
+                            };
+                    worker.execute();
+                });
     }
-
     public static synchronized frmDoctorDashboard getInstance() {
         if (instance == null) {
             instance = new frmDoctorDashboard();

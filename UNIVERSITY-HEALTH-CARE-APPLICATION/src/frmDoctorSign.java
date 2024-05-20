@@ -22,7 +22,6 @@ public class frmDoctorSign extends JFrame {
   private JButton clearAllButton;
   private JLabel phoneLabel;
   private JTextField phoneField;
-  private JLabel copyrightLabel;
 
   private frmDoctorSign() {
     setContentPane(panel);
