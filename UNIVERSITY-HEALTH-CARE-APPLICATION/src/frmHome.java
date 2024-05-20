@@ -114,7 +114,7 @@ public class frmHome extends JFrame {
                                                     JOptionPane.YES_NO_OPTION,
                                                     JOptionPane.QUESTION_MESSAGE);
                                     if (option == JOptionPane.YES_OPTION) {
-                                        if (String.valueOf(masterPwd.getPassword()).equals("mindfulness")) {
+                                        if (String.valueOf(masterPwd.getPassword()).equals("pdm")) {
                                             frmExplorer.getInstance().setVisible(true);
                                             setVisible(false);
                                         } else {
