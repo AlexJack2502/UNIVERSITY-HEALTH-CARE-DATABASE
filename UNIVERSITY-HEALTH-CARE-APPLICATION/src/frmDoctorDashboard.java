@@ -22,6 +22,8 @@ public class frmDoctorDashboard extends JFrame {
     private JButton clearAllButton;
     private JButton delistHealingButton;
     private JButton updateButton;
+    private JLabel bookingLabel;
+    private JLabel healthLabel;
 
     private frmDoctorDashboard() {
         setContentPane(panel);
@@ -160,6 +162,7 @@ public class frmDoctorDashboard extends JFrame {
                 e -> {
                     postButton.setEnabled(false);
                     if (dateField.getText().isEmpty()
+                            || bookingField.getText().isEmpty()
                             || priceField.getText().isEmpty()
                             || healthField.getText().isEmpty()) {
                         JOptionPane.showMessageDialog(

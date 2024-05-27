@@ -54,7 +54,7 @@
         </constraints>
         <properties>
           <font name="Google Sans" size="20" style="0"/>
-          <text value="Date of birth (YYYY-MM-DD)"/>
+          <text value="Date of birth (yyyy-mm-dd)"/>
         </properties>
       </component>
       <component id="bc549" class="javax.swing.JLabel" binding="emailLabel">

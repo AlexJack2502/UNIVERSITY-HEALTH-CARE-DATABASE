@@ -22,6 +22,8 @@ public class frmUpdate extends JFrame {
     private JButton clearAllButton;
     private JButton delistHealingButton;
     private JButton updateButton;
+    private JLabel bookingLabel;
+    private JLabel healthLabel;
 
     private frmUpdate() {
         setContentPane(panel);
@@ -161,6 +163,7 @@ public class frmUpdate extends JFrame {
                     postButton.setEnabled(false);
                     if (dateField.getText().isEmpty()
                             || priceField.getText().isEmpty()
+                            || bookingField.getText().isEmpty()
                             || healthField.getText().isEmpty()) {
                         JOptionPane.showMessageDialog(
                                 null, "Field(s) are empty!", "Warning", JOptionPane.WARNING_MESSAGE);

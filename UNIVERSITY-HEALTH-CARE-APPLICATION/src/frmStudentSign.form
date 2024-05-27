@@ -190,7 +190,7 @@
         </constraints>
         <properties>
           <font name="Google Sans" size="20" style="0"/>
-          <text value="Date of birth (YYYY-MM-DD)"/>
+          <text value="Date of birth (yyyy-mm-dd)"/>
         </properties>
       </component>
       <component id="67df7" class="javax.swing.JLabel" binding="firstNameLabel">

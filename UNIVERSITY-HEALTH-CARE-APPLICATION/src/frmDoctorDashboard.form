@@ -109,32 +109,13 @@
           <text value="Please fill in these information"/>
         </properties>
       </component>
-      <component id="9fa52" class="javax.swing.JLabel" binding="priceLabel">
-        <constraints>
-          <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <font name="Google Sans" size="20" style="0"/>
-          <text value="Price"/>
-        </properties>
-      </component>
-      <component id="596f3" class="javax.swing.JTextField" binding="priceField">
-        <constraints>
-          <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties>
-          <font name="Google Sans" size="14" style="0"/>
-        </properties>
-      </component>
       <component id="6f807" class="javax.swing.JLabel" binding="dateLabel">
         <constraints>
           <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <font name="Google Sans" size="20" style="0"/>
-          <text value="Date (YYYY-MM-DD)"/>
+          <text value="Date (yyyy-mm-dd)"/>
         </properties>
       </component>
       <component id="88b93" class="javax.swing.JTextField" binding="dateField">
@@ -189,6 +170,63 @@
           <font name="Google Sans" size="18" style="1"/>
           <foreground color="-327692"/>
           <text value="CLEAR ALL"/>
+        </properties>
+      </component>
+      <component id="9fa52" class="javax.swing.JLabel" binding="priceLabel">
+        <constraints>
+          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="Google Sans" size="20" style="0"/>
+          <text value="Price"/>
+        </properties>
+      </component>
+      <component id="596f3" class="javax.swing.JTextField" binding="priceField">
+        <constraints>
+          <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <font name="Google Sans" size="14" style="0"/>
+        </properties>
+      </component>
+      <component id="e5864" class="javax.swing.JLabel" binding="bookingLabel">
+        <constraints>
+          <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="Google Sans" size="20" style="0"/>
+          <text value="Booking Status"/>
+        </properties>
+      </component>
+      <component id="5e48c" class="javax.swing.JTextField" binding="bookingField">
+        <constraints>
+          <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <font name="Google Sans" size="14" style="0"/>
+        </properties>
+      </component>
+      <component id="18584" class="javax.swing.JLabel" binding="healthLabel">
+        <constraints>
+          <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="Google Sans" size="20" style="0"/>
+          <text value="Health Status"/>
+        </properties>
+      </component>
+      <component id="9dcd9" class="javax.swing.JTextField" binding="healthField">
+        <constraints>
+          <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <font name="Google Sans" size="14" style="0"/>
         </properties>
       </component>
     </children>
