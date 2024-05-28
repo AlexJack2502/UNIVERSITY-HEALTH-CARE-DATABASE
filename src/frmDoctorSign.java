@@ -96,8 +96,8 @@ public class frmDoctorSign extends JFrame {
                     if (ConnectSQL.submitDoctorUser(
                         frmHome.getInstance().getCredentials()[0],
                         frmHome.getInstance().getCredentials()[1],
-                        lastNameField.getText(),
                         firstNameField.getText(),
+                        lastNameField.getText(),
                         dobField.getText(),
                         String.valueOf(genderField.getSelectedItem()),
                         emailField.getText(),
