@@ -31,13 +31,13 @@ SELECT @AID = MAX(A_ID) + 1 FROM Appointment.Appointment
 INSERT INTO [Appointment].[Appointment] ([A_ID], [Date], [HealthStatus], [BookingStatus])
 VALUES (@AID, ?, ?, ?)
 INSERT INTO [Appointment].[Doctor_Appointment] ([Appointment_ID], [Doctor_ID])
-VALUES (@AID, 1)
+VALUES (@AID, ?)
 INSERT INTO [Appointment].[Student_Appointment] ([Appointment_ID], [Student_ID])
 VALUES (@AID, NULL)
 DECLARE @BID INT
 SELECT @BID = MAX(BID) + 1 FROM Billing.Billing
 INSERT INTO [Billing].Billing(BID, Price, Appointment_ID, Insurerace)
-VALUES (@BID, 0.00, @AID, 0)
+VALUES (@BID, ?, @AID, 0)
 
 --showDoctorBookingQuery
 SELECT A.A_ID AS [ID], A.Date AS [Date], B.Price AS [Price], CONCAT(S.LastName , ' ' , S.FirstName) AS [FullName], S.Gender AS [Gender], S.PhoneNumber AS [Phone], 'Booked' AS State
@@ -134,9 +134,9 @@ WHERE  SA.Student_ID is null and Date >= CAST(GETDATE() AS DATE) ORDER BY A.Date
 --submitStudentHealingUpdate
 DECLARE @AID INT
 SELECT @AID = A_ID FROM Appointment.Appointment
-WHERE A_ID = 13
+WHERE A_ID = ?
 UPDATE Appointment.Student_Appointment
-SET Student_ID = 21091
+SET Student_ID = ?
 WHERE Appointment_ID = @AID
 UPDATE Billing.Billing
 SET Insurerace = 1
