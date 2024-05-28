@@ -70,7 +70,7 @@ public class frmDoctorSign extends JFrame {
               || emailField.getText().isEmpty()
               || dobField.getText().isEmpty()
               || String.valueOf(genderField.getSelectedItem()).equals("<please choose>")
-              || idField.getText().length() != 12
+              || idField.getText().length() > 12
               || phoneField.getText().length() != 10) {
             JOptionPane.showMessageDialog(
                 null,
