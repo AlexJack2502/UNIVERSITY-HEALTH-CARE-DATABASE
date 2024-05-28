@@ -94,8 +94,8 @@ public class frmStudentSign extends JFrame {
                     if (ConnectSQL.submitStudentUser(
                         frmHome.getInstance().getCredentials()[0],
                         frmHome.getInstance().getCredentials()[1],
-                        lastNameField.getText(),
                         firstNameField.getText(),
+                        lastNameField.getText(),
                         dobField.getText(),
                         String.valueOf(genderField.getSelectedItem()),
                         majorField.getText(),
