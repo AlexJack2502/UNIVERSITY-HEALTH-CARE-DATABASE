@@ -113,12 +113,12 @@ public class ConnectSQL {
                     """
                     DECLARE @AID INT
                     SELECT @AID = MAX(A_ID) + 1 FROM Appointment.Appointment
-                    INSERT INTO [Appointment].[Appointment] ([A_ID], [Date], [HealthStatus], [BookingStatus])
-                    VALUES (@AID, ?, ?, ?)
                     INSERT INTO [Appointment].[Doctor_Appointment] ([Appointment_ID], [Doctor_ID])
                     VALUES (@AID, ?)
                     INSERT INTO [Appointment].[Student_Appointment] ([Appointment_ID], [Student_ID])
                     VALUES (@AID, NULL)
+                    INSERT INTO [Appointment].[Appointment] ([A_ID], [Date], [HealthStatus], [BookingStatus])
+                    VALUES (@AID, ?, ?, ?)
                     DECLARE @BID INT
                     SELECT @BID = MAX(BID) + 1 FROM Billing.Billing
                     INSERT INTO [Billing].Billing(BID, Price, Appointment_ID, Insurerace)
@@ -151,20 +151,21 @@ public class ConnectSQL {
             con = DriverManager.getConnection(connectionUrl);
             String preparedQuery =
                     """
+                    DECLARE @DID INT = ?
                     SELECT A.A_ID AS [ID], A.Date AS [Date], B.Price AS [Price], CONCAT(S.LastName , ' ' , S.FirstName) AS [FullName], S.Gender AS [Gender], S.PhoneNumber AS [Phone], 'Booked' AS State
                     FROM Appointment.Student_Appointment SA
                     JOIN Appointment.Appointment A ON SA.Appointment_ID = A.A_ID
                     JOIN Billing.Billing B ON SA.Appointment_ID = B.Appointment_ID
                     JOIN Account.Student S ON SA.Student_ID = S.St_ID
                     JOIN Appointment.Doctor_Appointment DA ON SA.Appointment_ID = DA.Appointment_ID
-                    WHERE DA.Doctor_ID = ?
+                    WHERE DA.Doctor_ID = @DID
                     UNION ALL
                     SELECT DA.Appointment_ID, A.Date, B.Price, 'NULL' AS FullName, 'NULL' AS Gender, 'NULL' AS PhoneNumber, NULL AS State
                     FROM Appointment.Doctor_Appointment DA
                     JOIN Appointment.Appointment A ON DA.Appointment_ID = A.A_ID
                     JOIN Billing.Billing B ON DA.Appointment_ID = B.Appointment_ID
                     LEFT JOIN Appointment.Student_Appointment SA ON DA.Appointment_ID = SA.Appointment_ID
-                    WHERE SA.Student_ID IS NULL AND DA.Doctor_ID = ?""";
+                    WHERE SA.Student_ID IS NULL AND DA.Doctor_ID = DID""";
 
             stmt = con.prepareStatement(preparedQuery);
             stmt.setString(1, doctorTxt);
@@ -516,12 +517,12 @@ public class ConnectSQL {
                     SET Student_ID = ?
                     WHERE Appointment_ID = @AID
                     UPDATE Billing.Billing
-                    SET Insurerace = 1
+                    SET Insurerace = ?
                     WHERE Appointment_ID = @AID""";
             stmt = con.prepareStatement(updateString);
             stmt.setString(1, appointmentTxt);
             stmt.setString(2, studentTxt);
-            stmt.setString(2, insuranceTxt);
+            stmt.setString(3, insuranceTxt);
             rs = stmt.executeUpdate();
             if (rs > 0) {
                 isUpdated = true;
