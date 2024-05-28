@@ -71,7 +71,7 @@ public class frmStudentSign extends JFrame {
               || dobField.getText().isEmpty()
               || String.valueOf(genderField.getSelectedItem()).equals("<please choose>")
                   || majorField.getText().isEmpty()
-                  || idField.getText().length() != 12
+                  || idField.getText().length() > 12
                   || phoneField.getText().length() != 10) {
             JOptionPane.showMessageDialog(
                 null, "Field(s) are empty!", "Warning", JOptionPane.WARNING_MESSAGE);
