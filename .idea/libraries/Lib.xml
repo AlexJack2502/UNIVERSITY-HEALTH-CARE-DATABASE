@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../UNIVERSITY-HEALTH-CARE-DATABASE/UNIVERSITY-HEALTH-CARE-APPLICATION/Lib/rs2xml.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../UNIVERSITY-HEALTH-CARE-DATABASE/UNIVERSITY-HEALTH-CARE-APPLICATION/Lib/mssql-jdbc-12.2.0.jre8.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
