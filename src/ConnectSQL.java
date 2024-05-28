@@ -111,14 +111,18 @@ public class ConnectSQL {
             con.setAutoCommit(false);
             String updateString =
                     """
-                            DECLARE @AID INT
-                            SELECT @AID = MAX(A_ID) + 1 FROM Appointment.Appointment
-                            INSERT INTO [Appointment].[Appointment] ([A_ID],[Doctor_ID], [Student_ID], [Date], [HealthStatus], [BookingStatus])
-                            VALUES (@AID, ?, NULL, ?, ?, ?)
-                            DECLARE @BID INT
-                            SELECT @BID = MAX(BID) + 1 FROM Billing.Billing
-                            INSERT INTO [Billing].Billing(BID, Price, Appointment_ID, Insurerace)
-                            VALUES (@BID, ?, @AID, 0)""";
+                    DECLARE @AID INT
+                    SELECT @AID = MAX(A_ID) + 1 FROM Appointment.Appointment
+                    INSERT INTO [Appointment].[Appointment] ([A_ID], [Date], [HealthStatus], [BookingStatus])
+                    VALUES (@AID, ?, ?, ?)
+                    INSERT INTO [Appointment].[Doctor_Appointment] ([Appointment_ID], [Doctor_ID])
+                    VALUES (@AID, ?)
+                    INSERT INTO [Appointment].[Student_Appointment] ([Appointment_ID], [Student_ID])
+                    VALUES (@AID, NULL)
+                    DECLARE @BID INT
+                    SELECT @BID = MAX(BID) + 1 FROM Billing.Billing
+                    INSERT INTO [Billing].Billing(BID, Price, Appointment_ID, Insurerace)
+                    VALUES (@BID, ?, @AID, 0)""";
             stmt = con.prepareStatement(updateString);
             stmt.setString(1, doctorTxt);
             stmt.setDate(2, java.sql.Date.valueOf(dateTxt));
@@ -147,17 +151,20 @@ public class ConnectSQL {
             con = DriverManager.getConnection(connectionUrl);
             String preparedQuery =
                     """
-                            SELECT A.A_ID AS [ID], A.Date AS [Date], B.Price AS [Price],CONCAT(S.LastName , ' ' , S.FirstName) AS [FullName], S.Gender AS [Gender], S.PhoneNumber AS [Phone],
-                            CASE
-                                WHEN AD.Appointment_ID = ASA.Appointment_ID THEN 'Confirmed'
-                                ELSE 'Pending'
-                                END AS State
-                            FROM [Appointment].[Appointment] A
-                                INNER JOIN [Billing].[Billing] B ON B.Appointment_ID = A.A_ID
-                                INNER JOIN [Appointment].[Doctor_Appointment] AD ON AD.Appointment_ID = A.A_ID
-                                INNER JOIN [Appointment].[Student_Appointment] ASA ON ASA.Appointment_ID = A.A_ID
-                                INNER JOIN [Account].[Student] S ON ASA.Student_ID = S.St_ID
-                            WHERE AD.Doctor_ID = ?""";
+                    SELECT A.A_ID AS [ID], A.Date AS [Date], B.Price AS [Price], CONCAT(S.LastName , ' ' , S.FirstName) AS [FullName], S.Gender AS [Gender], S.PhoneNumber AS [Phone], 'Booked' AS State
+                    FROM Appointment.Student_Appointment SA
+                    JOIN Appointment.Appointment A ON SA.Appointment_ID = A.A_ID
+                    JOIN Billing.Billing B ON SA.Appointment_ID = B.Appointment_ID
+                    JOIN Account.Student S ON SA.Student_ID = S.St_ID
+                    JOIN Appointment.Doctor_Appointment DA ON SA.Appointment_ID = DA.Appointment_ID
+                    WHERE DA.Doctor_ID = ?
+                    UNION ALL
+                    SELECT DA.Appointment_ID, A.Date, B.Price, 'NULL' AS FullName, 'NULL' AS Gender, 'NULL' AS PhoneNumber, NULL AS State
+                    FROM Appointment.Doctor_Appointment DA
+                    JOIN Appointment.Appointment A ON DA.Appointment_ID = A.A_ID
+                    JOIN Billing.Billing B ON DA.Appointment_ID = B.Appointment_ID
+                    LEFT JOIN Appointment.Student_Appointment SA ON DA.Appointment_ID = SA.Appointment_ID
+                    WHERE SA.Student_ID IS NULL AND DA.Doctor_ID = ?""";
 
             stmt = con.prepareStatement(preparedQuery);
             stmt.setString(1, doctorTxt);
@@ -204,6 +211,10 @@ public class ConnectSQL {
             con.setAutoCommit(false);
             String updateString =
                     """
+                    SELECT A.Date
+                    FROM Appointment.Appointment A
+                    INNER JOIN Appointment.Doctor_Appointment DA ON DA.Appointment_ID = A.A_ID
+                    WHERE A.Date >= CAST(GETDATE() AS DATE)
                     DELETE FROM [Appointment].[Doctor_Appointment]
                     WHERE Doctor_ID = ? AND Appointment_ID = ?""";
             stmt = con.prepareStatement(updateString);
@@ -308,10 +319,13 @@ public class ConnectSQL {
                     DECLARE @price AS INT = ?
                     DECLARE @healthStatus AS VARCHAR(50) = ?
                     DECLARE @bookingStatus AS VARCHAR(20) = ?
-                    
+
                     UPDATE Appointment.Appointment
                     SET Date = @date, HealthStatus = @healthStatus, BookingStatus = @bookingStatus
-                    WHERE A_ID = @AppointmentID""";
+                    WHERE A_ID = @AppointmentID
+                    UPDATE Billing.Billing
+                    SET Price = @price
+                    WHERE Appointment_ID = @AppointmentID""";
 
             stmt = con.prepareStatement(updateString);
             stmt.setString(1, appointmentID);
@@ -380,8 +394,12 @@ public class ConnectSQL {
             con.setAutoCommit(false);
             String updateString =
                     """
-                            DELETE FROM [Appointment].[Student_Appointment]
-                            WHERE Student_ID = ? AND Appointment_ID = ?
+                    SELECT A.Date
+                    FROM Appointment.Appointment A
+                    INNER JOIN Appointment.Student_Appointment SA ON SA.Appointment_ID = A.A_ID
+                    WHERE A.Date >= CAST(GETDATE() AS DATE)
+                    DELETE FROM [Appointment].[Student_Appointment]
+                    WHERE Student_ID = ? AND Appointment_ID = ?
                             """;
             stmt = con.prepareStatement(updateString);
             stmt.setString(1, studentTxt);
@@ -407,10 +425,14 @@ public class ConnectSQL {
             con = DriverManager.getConnection(connectionUrl);
             String preparedQuery =
                     """
-                            SELECT A.A_ID AS [ID], A.Date AS [Date], D.FirstName AS [FirstName],D.LastName AS [LastName], D.PhoneNumber AS [Phone]
-                            FROM [Appointment].[Appointment] A, [Account].[Doctor] D, [Account].[Student] S
-                            WHERE D.D_ID = A.Doctor_ID AND S.St_ID = A.Student_ID AND S.St_ID = ? AND A.Date >= CAST(GETDATE() AS DATE)
-                            ORDER BY A.Date ASC""";
+                    SELECT A.A_ID AS [ID], A.Date AS [Date], D.FirstName AS [FirstName], D.LastName AS [LastName], D.PhoneNumber AS [Phone]
+                    FROM [Appointment].[Appointment] A
+                    INNER JOIN [Appointment].[Doctor_Appointment] DA ON DA.Appointment_ID = A.A_ID
+                    INNER JOIN [Account].[Doctor] D ON D.D_ID = DA.Doctor_ID
+                    INNER JOIN [Appointment].[Student_Appointment] SA ON SA.Appointment_ID = A.A_ID
+                    INNER JOIN [Account].[Student] S ON S.St_ID = SA.Student_ID
+                    WHERE S.St_ID = ? AND A.Date >= CAST(GETDATE() AS DATE)
+                    ORDER BY A.Date ASC""";
             stmt = con.prepareStatement(preparedQuery);
             stmt.setString(1, studentTxt);
             rs = stmt.executeQuery();
@@ -447,13 +469,13 @@ public class ConnectSQL {
             con = DriverManager.getConnection(connectionUrl);
             String preparedQuery =
                     """
-                            SELECT A.A_ID, A.Date, B.Price, D.FirstName, D.LastName, D.Gender
-                            FROM [Appointment].[Appointment] A
-                            	INNER JOIN [Billing].[Billing] B ON A.A_ID = B. Appointment_ID
-                            	INNER JOIN [Appointment].[Doctor_Appointment] DA ON A.A_ID = DA.Appointment_ID
-                            	INNER JOIN [Account].[Doctor] D ON D.D_ID = DA.Doctor_ID
-                            WHERE A.Date >= CAST(GETDATE() AS DATE)
-                            ORDER BY A.Date ASC""";
+                    SELECT A.A_ID, A.Date, B.Price, D.FirstName, D.LastName, D.Gender, SA.Student_ID
+                    FROM [Appointment].[Appointment] A
+                    INNER JOIN [Billing].[Billing] B ON A.A_ID = B.Appointment_ID
+                    INNER JOIN [Appointment].[Doctor_Appointment] DA ON A.A_ID = DA.Appointment_ID
+                    INNER JOIN [Account].[Doctor] D ON D.D_ID = DA.Doctor_ID
+                    INNER JOIN [Appointment].[Student_Appointment] SA ON SA.Appointment_ID = A.A_ID
+                    WHERE SA.Student_ID is null and Date >= CAST(GETDATE() AS DATE) ORDER BY A.Date ASC""";
             stmt = con.prepareStatement(preparedQuery);
             rs = stmt.executeQuery();
             if (!rs.next()) {
@@ -487,16 +509,15 @@ public class ConnectSQL {
             con.setAutoCommit(false);
             String updateString =
                     """
-                            DECLARE @AID INT
-                            SELECT @AID = A_ID FROM Appointment.Appointment
-                            WHERE A_ID = ?
-                            
-                            UPDATE Appointment.Appointment
-                                SET Student_ID = ?
-                                WHERE A_ID = @AID
-                            UPDATE Billing.Billing
-                                SET Insurerace = ?
-                                WHERE Appointment_ID = @AID""";
+                    DECLARE @AID INT
+                    SELECT @AID = A_ID FROM Appointment.Appointment
+                    WHERE A_ID = ?
+                    UPDATE Appointment.Student_Appointment
+                    SET Student_ID = ?
+                    WHERE Appointment_ID = @AID
+                    UPDATE Billing.Billing
+                    SET Insurerace = 1
+                    WHERE Appointment_ID = @AID""";
             stmt = con.prepareStatement(updateString);
             stmt.setString(1, appointmentTxt);
             stmt.setString(2, studentTxt);
