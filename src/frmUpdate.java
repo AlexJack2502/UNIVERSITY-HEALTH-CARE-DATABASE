@@ -62,6 +62,7 @@ public class frmUpdate extends JFrame {
                 e -> {
                     updateButton.setEnabled(false);
                     if (dateField.getText().isEmpty()
+                            || dateField.getText().length() !=10
                             || priceField.getText().isEmpty()
                             || healthField.getText().isEmpty()
                             || bookingField.getText().isEmpty()) {
