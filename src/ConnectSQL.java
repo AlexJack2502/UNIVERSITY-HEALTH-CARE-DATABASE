@@ -461,7 +461,7 @@ public class ConnectSQL {
         }
         return result.toString();
     }
-    // can sua
+
     public static void showAvailableAppointmentQuery(JTable resultTable) {
         Connection con = null;
         PreparedStatement stmt;
