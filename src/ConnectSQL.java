@@ -544,7 +544,8 @@ public class ConnectSQL {
             String genderTxt,
             String emailTxt,
             String phoneTxt,
-            String doctorIdTxt ) {
+            String doctorIdTxt,
+            String UId) {
         Connection con = null;
         PreparedStatement stmt1;
         PreparedStatement stmt2;
@@ -558,11 +559,13 @@ public class ConnectSQL {
                     """
                             DECLARE @UserName AS VARCHAR(20) = ?
                             DECLARE @Pwd AS VARCHAR(255) = ?
-                            INSERT INTO [Account].[User] ([User_name], [Password])
-                            VALUES (@UserName, @Pwd)""";
+                            DECLARE @UId AS VARCHAR(20) = ?
+                            INSERT INTO [Account].[User] ([U_ID],[User_name], [Password])
+                            VALUES (@UId,@UserName, @Pwd)""";
             stmt1 = con.prepareStatement(updateString1);
             stmt1.setString(1, accountTxt);
             stmt1.setString(2, pwdTxt);
+            stmt1.setString(3, UId);
             rs1 = stmt1.executeUpdate();
             String updateString2 =
                     """
@@ -615,11 +618,13 @@ public class ConnectSQL {
                     """
                             DECLARE @UserName AS VARCHAR(20) = ?
                             DECLARE @Pwd AS VARCHAR(255) = ?
-                            INSERT INTO [Account].[User] ([User_name], [Password])
-                            VALUES (@UserName, @Pwd)""";
+                            DECLARE @UId AS VARCHAR(20) = ?
+                            INSERT INTO [Account].[User] ([U_ID],[User_name], [Password])
+                            VALUES (@UId,@UserName, @Pwd)""";
             stmt1 = con.prepareStatement(updateString1);
             stmt1.setString(1, accountTxt);
             stmt1.setString(2, pwdTxt);
+            stmt1.setString(3, UId);
             rs1 = stmt1.executeUpdate();
             String updateString2 =
                     """
@@ -683,4 +688,69 @@ public class ConnectSQL {
             closeConnect(con);
         }
     }
+    public static String getStudentId(){
+
+        Connection con = null;
+        PreparedStatement stmt;
+
+        String UId = "";
+        String id = "";
+        try {
+            con = DriverManager.getConnection(connectionUrl);
+            con.setAutoCommit(false);
+
+            String updateString = """
+                    select max(User_ID) from Account.Student""";
+            stmt = con.prepareStatement(updateString);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                id = rs.getString(1);
+            }
+
+            String[] ID = id.split("0",2);
+            UId = ID[0] +"0"+ String.valueOf(Integer.parseInt(ID[1])+1);
+
+            con.commit();
+        } catch (SQLException e) {
+            return UId;
+        } finally {
+            closeConnect(con);
+        }
+        return UId;
+    }
+
+
+    public static String getDoctorId(){
+
+        Connection con = null;
+        PreparedStatement stmt;
+
+        String UId = "";
+        String id = "";
+        try {
+            con = DriverManager.getConnection(connectionUrl);
+            con.setAutoCommit(false);
+
+            String updateString = """
+                    select max(User_ID) from Account.Doctor;""";
+            stmt = con.prepareStatement(updateString);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                id = rs.getString(1);
+            }
+
+            String[] ID = id.split("0",2);
+            UId = ID[0] +"0"+ String.valueOf(Integer.parseInt(ID[1])+1);
+
+            con.commit();
+        } catch (SQLException e) {
+            return UId;
+        } finally {
+            closeConnect(con);
+        }
+        return UId;
+    }
+
 }
