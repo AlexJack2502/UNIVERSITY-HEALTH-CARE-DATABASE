@@ -101,7 +101,8 @@ public class frmStudentSign extends JFrame {
                         majorField.getText(),
                         phoneField.getText(),
                         idField.getText(),
-                        addressField.getText())) {
+                        addressField.getText(),
+                        ConnectSQL.getStudentId())) {
                       JOptionPane.showMessageDialog(
                           null,
                           "Account: "
