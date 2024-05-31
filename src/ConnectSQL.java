@@ -569,7 +569,7 @@ public class ConnectSQL {
             rs1 = stmt1.executeUpdate();
             String updateString2 =
                     """
-                            INSERT INTO [Account].[Doctor] ([D_ID], [User_ID], [FirstName], [LastName], [Gender], [DateOfBirth], [Email], [PhoneNumber])
+                            INSERT INTO [Account].[Doctor] ([D_ID], [User_ID], [FirstName], [LastName], [Gender], [DateOfBirth], [EmailAddress], [PhoneNumber])
                             VALUES (?, (SELECT U_ID FROM [Account].[User] U WHERE U.User_name = ?), ?, ?,?, ?, ?, ?)""";
             stmt2 = con.prepareStatement(updateString2);
             stmt2.setString(1, doctorIdTxt);
