@@ -102,7 +102,8 @@ public class frmDoctorSign extends JFrame {
                         String.valueOf(genderField.getSelectedItem()),
                         emailField.getText(),
                         phoneField.getText(),
-                        idField.getText())) {
+                        idField.getText(),
+                        ConnectSQL.getDoctorId())) {
                       JOptionPane.showMessageDialog(
                           null,
                           "Account: "
