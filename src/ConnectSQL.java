@@ -111,23 +111,23 @@ public class ConnectSQL {
             con.setAutoCommit(false);
             String updateString =
                     """
-                    DECLARE @AID INT
-                    SELECT @AID = MAX(A_ID) + 1 FROM Appointment.Appointment
-                    INSERT INTO [Appointment].[Doctor_Appointment] ([Appointment_ID], [Doctor_ID])
-                    VALUES (@AID, ?)
-                    INSERT INTO [Appointment].[Student_Appointment] ([Appointment_ID], [Student_ID])
-                    VALUES (@AID, NULL)
-                    INSERT INTO [Appointment].[Appointment] ([A_ID], [Date], [HealthStatus], [BookingStatus])
-                    VALUES (@AID, ?, ?, ?)
-                    DECLARE @BID INT
-                    SELECT @BID = MAX(BID) + 1 FROM Billing.Billing
-                    INSERT INTO [Billing].Billing(BID, Price, Appointment_ID, Insurerace)
-                    VALUES (@BID, ?, @AID, 0)""";
+                            DECLARE @AID INT
+                            SELECT @AID = MAX(A_ID) + 1 FROM Appointment.Appointment
+                            INSERT INTO [Appointment].[Appointment] ([A_ID], [Date], [HealthStatus], [BookingStatus])
+                            VALUES (@AID, ?, ?, ?)
+                            INSERT INTO [Appointment].[Doctor_Appointment] ([Appointment_ID], [Doctor_ID])
+                            VALUES (@AID, ?)
+                            INSERT INTO [Appointment].[Student_Appointment] ([Appointment_ID], [Student_ID])
+                            VALUES (@AID, NULL)
+                            DECLARE @BID INT
+                            SELECT @BID = MAX(BID) + 1 FROM Billing.Billing
+                            INSERT INTO [Billing].Billing(BID, Price, Appointment_ID, Insurerace)
+                            VALUES (@BID, ?, @AID, 0)""";
             stmt = con.prepareStatement(updateString);
-            stmt.setString(1, doctorTxt);
-            stmt.setDate(2, java.sql.Date.valueOf(dateTxt));
-            stmt.setString(3, HealthStatusTxt);
-            stmt.setString(4, BookingStatusTxt);
+            stmt.setString(4, doctorTxt);
+            stmt.setDate(1, Date.valueOf(dateTxt));
+            stmt.setString(2, HealthStatusTxt);
+            stmt.setString(3, BookingStatusTxt);
             stmt.setString(5, priceTxt);
 
             rs = stmt.executeUpdate();
@@ -165,7 +165,7 @@ public class ConnectSQL {
                     JOIN Appointment.Appointment A ON DA.Appointment_ID = A.A_ID
                     JOIN Billing.Billing B ON DA.Appointment_ID = B.Appointment_ID
                     LEFT JOIN Appointment.Student_Appointment SA ON DA.Appointment_ID = SA.Appointment_ID
-                    WHERE SA.Student_ID IS NULL AND DA.Doctor_ID = DID""";
+                    WHERE SA.Student_ID IS NULL AND DA.Doctor_ID = @DID""";
 
             stmt = con.prepareStatement(preparedQuery);
             stmt.setString(1, doctorTxt);
